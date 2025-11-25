@@ -5,9 +5,9 @@ pipeline {
         NODE_ENV = 'production'
         IMAGE_NAME = 'digital-artist-app'
         IMAGE_TAG = 'latest'
-        DOCKERHUB_REPO = '07yogesh/digital-artist-app' // Docker Hub repo
-        HOST_PORT = '3000'       // port you want to access on host
-        CONTAINER_PORT = '80'    // Nginx default port inside container
+        DOCKERHUB_REPO = '07yogesh/digital-artist-app'
+        HOST_PORT = '3000'
+        CONTAINER_PORT = '80'
     }
 
     tools {
@@ -15,6 +15,7 @@ pipeline {
     }
 
     stages {
+
         stage('Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/yogi7302/MyApp.git'
@@ -23,7 +24,18 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                bat 'npm ci'
+                bat """
+                ECHO Attempting npm ci...
+
+                npm ci
+                IF %ERRORLEVEL% NEQ 0 (
+                    ECHO ============================================
+                    ECHO npm ci failed! Falling back to npm install...
+                    ECHO ============================================
+
+                    npm install
+                )
+                """
             }
         }
 
@@ -48,7 +60,10 @@ pipeline {
 
         stage('Push Docker Image') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', 
+                        usernameVariable: 'DOCKERHUB_USERNAME', 
+                        passwordVariable: 'DOCKERHUB_PASSWORD')]) {
+
                     bat "echo %DOCKERHUB_PASSWORD% | docker login -u %DOCKERHUB_USERNAME% --password-stdin"
                     bat "docker push %DOCKERHUB_REPO%:%IMAGE_TAG%"
                 }
