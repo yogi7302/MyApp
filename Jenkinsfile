@@ -6,7 +6,7 @@ pipeline {
         IMAGE_NAME = 'digital-artist-app'
         IMAGE_TAG = 'latest'
         DOCKERHUB_REPO = '07yogesh/digital-artist-app'
-        HOST_PORT = '3000'
+        HOST_PORT = '3001'          // Changed host port to avoid conflict
         CONTAINER_PORT = '80'
     }
 
@@ -102,7 +102,7 @@ pipeline {
 
     post {
         success {
-            echo 'Pipeline completed: Docker image built, pushed, and running at http://localhost:3000'
+            echo 'Pipeline completed: Docker image built, pushed, and running at http://localhost:3001'
         }
         failure {
             echo 'Pipeline failed! Check the console output for errors.'
