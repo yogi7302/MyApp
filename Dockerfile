@@ -1,17 +1,14 @@
-# Use nginx to serve static files
+# Use Nginx to serve static files
 FROM nginx:alpine
 
-# Remove default nginx website
+# Remove default Nginx website
 RUN rm -rf /usr/share/nginx/html/*
 
 # Copy built Vite app
 COPY dist /usr/share/nginx/html
 
-# Expose a custom port (e.g., 3000)
-EXPOSE 3000
+# Expose default Nginx port
+EXPOSE 80
 
-# Override default Nginx config to listen on 3000
-RUN sed -i 's/listen       80;/listen       3000;/' /etc/nginx/conf.d/default.conf
-
-# Start nginx
+# Start Nginx
 CMD ["nginx", "-g", "daemon off;"]
