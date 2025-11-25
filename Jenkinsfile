@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        NODE_ENV = 'development'  // Ensure devDependencies (like Vite) are installed
+        NODE_ENV = 'development'  // Ensure devDependencies are installed
         IMAGE_NAME = 'digital-artist-app'
         IMAGE_TAG = 'latest'
         DOCKERHUB_REPO = '07yogesh/digital-artist-app'
@@ -43,14 +43,28 @@ pipeline {
                 ECHO Verifying Vite installation...
                 npm list vite
                 ECHO Running Vite build...
-                npx vite build || exit /b 1
+                npx vite build
+                ECHO Listing dist folder contents...
+                if exist dist (
+                    dir dist
+                ) else (
+                    ECHO dist folder not found
+                    exit /b 1
+                )
                 """
             }
         }
 
         stage('Archive Build') {
             steps {
-                archiveArtifacts artifacts: 'dist/**', fingerprint: true
+                // Only archive if dist exists
+                script {
+                    if (fileExists('dist')) {
+                        archiveArtifacts artifacts: 'dist/**', fingerprint: true
+                    } else {
+                        error "dist folder not found. Cannot archive artifacts."
+                    }
+                }
             }
         }
 
