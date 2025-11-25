@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 export default function App() {
-  // ------------------ Artwork Data ------------------
+  // ------------------ My Artwork Data ------------------
   const initialArtworks = [
     {
       id: "a1",
