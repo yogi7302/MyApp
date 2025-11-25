@@ -1,0 +1,72 @@
+/* =========================
+   Tailwind base imports
+   ========================= */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =========================
+   Custom global styles
+   ========================= */
+
+/* Smooth scrolling for anchor links */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Body gradient background fallback */
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #fff;
+  margin: 0;
+  padding: 0;
+}
+
+/* Custom scrollbar for cart and modals */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ec4899; /* Tailwind pink-500 */
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #db2777; /* Tailwind pink-600 */
+}
+
+/* Overlay for modals */
+.modal-overlay {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+/* Buttons: optional hover effects */
+button:hover {
+  opacity: 0.9;
+  transition: opacity 0.2s ease-in-out;
+}
+
+/* Headings spacing */
+h1, h2, h3, h4, h5 {
+  margin: 0;
+}
+
+/* Footer styling */
+footer {
+  background-color: #f9fafb; /* Tailwind gray-50 */
+}
+
+/* Input and textarea focus */
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: #ec4899; /* Tailwind pink-500 */
+  box-shadow: 0 0 0 2px rgba(236, 72, 153, 0.2);
+}
