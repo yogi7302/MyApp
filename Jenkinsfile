@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        NODE_ENV = 'development'  // Ensure devDependencies are installed
+        NODE_ENV = 'development'  // Ensure devDependencies (like Vite) are installed
         IMAGE_NAME = 'digital-artist-app'
         IMAGE_TAG = 'latest'
         DOCKERHUB_REPO = '07yogesh/digital-artist-app'
@@ -26,7 +26,6 @@ pipeline {
             steps {
                 bat """
                 ECHO Installing npm dependencies...
-
                 REM Attempt npm ci; fallback to npm install if it fails
                 cmd /c "npm ci" || (
                     ECHO ============================================
@@ -44,7 +43,7 @@ pipeline {
                 ECHO Verifying Vite installation...
                 npm list vite
                 ECHO Running Vite build...
-                npx vite build
+                npx vite build || exit /b 1
                 """
             }
         }
