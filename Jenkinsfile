@@ -5,13 +5,13 @@ pipeline {
         NODE_ENV = 'production'
         IMAGE_NAME = 'digital-artist-app'
         IMAGE_TAG = 'latest'
-        DOCKERHUB_REPO = '07yogesh/digital-artist-app' // replace with your Docker Hub repo
-        CONTAINER_PORT = '3000'  // internal app port in Docker
-        HOST_PORT = '3000'       // host port you want to expose
+        DOCKERHUB_REPO = '07yogesh/digital-artist-app' // Docker Hub repo
+        HOST_PORT = '3000'       // port you want to access on host
+        CONTAINER_PORT = '80'    // Nginx default port inside container
     }
 
     tools {
-        nodejs 'NodeJS' // Name of the NodeJS installation configured in Jenkins
+        nodejs 'NodeJS'
     }
 
     stages {
@@ -23,14 +23,12 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                // Ensure devDependencies (like Vite) are installed
-                bat 'npm install --include=dev'
+                bat 'npm ci'
             }
         }
 
         stage('Build Vite App') {
             steps {
-                // Use npx to run the local Vite binary
                 bat 'npx vite build'
             }
         }
@@ -57,11 +55,9 @@ pipeline {
             }
         }
 
-        stage('Pull and Run Docker Image') {
+        stage('Run Docker Container') {
             steps {
-                // Remove container if it exists
                 bat "docker rm -f %IMAGE_NAME% || echo Container not found"
-                bat "docker pull %DOCKERHUB_REPO%:%IMAGE_TAG%"
                 bat "docker run -d --name %IMAGE_NAME% -p %HOST_PORT%:%CONTAINER_PORT% %DOCKERHUB_REPO%:%IMAGE_TAG%"
             }
         }
@@ -69,7 +65,7 @@ pipeline {
 
     post {
         success {
-            echo 'Pipeline completed: Docker image built, pushed, pulled, and container is running on localhost:3000!'
+            echo 'Pipeline completed: Docker image built, pushed, and running at localhost:3000!'
         }
         failure {
             echo 'Pipeline failed!'
