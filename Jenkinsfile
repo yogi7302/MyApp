@@ -27,12 +27,11 @@ pipeline {
                 bat """
                 ECHO Attempting npm ci...
 
-                npm ci
-                IF %ERRORLEVEL% NEQ 0 (
+                REM Run npm ci but DO NOT stop the batch on failure
+                cmd /c "npm ci" || (
                     ECHO ============================================
                     ECHO npm ci failed! Falling back to npm install...
                     ECHO ============================================
-
                     npm install
                 )
                 """
@@ -60,10 +59,13 @@ pipeline {
 
         stage('Push Docker Image') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', 
-                        usernameVariable: 'DOCKERHUB_USERNAME', 
-                        passwordVariable: 'DOCKERHUB_PASSWORD')]) {
-
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'dockerhub-creds',
+                        usernameVariable: 'DOCKERHUB_USERNAME',
+                        passwordVariable: 'DOCKERHUB_PASSWORD'
+                    )
+                ]) {
                     bat "echo %DOCKERHUB_PASSWORD% | docker login -u %DOCKERHUB_USERNAME% --password-stdin"
                     bat "docker push %DOCKERHUB_REPO%:%IMAGE_TAG%"
                 }
@@ -80,7 +82,7 @@ pipeline {
 
     post {
         success {
-            echo 'Pipeline completed: Docker image built, pushed, and running at localhost:3000!'
+            echo 'Pipeline completed: Docker image built, pushed, and running at http://localhost:3000'
         }
         failure {
             echo 'Pipeline failed!'
