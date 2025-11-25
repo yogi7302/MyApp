@@ -25,13 +25,13 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 bat """
-                cmd /c ^
-                ECHO Installing npm dependencies... && ^
-                npm ci || ( ^
-                    ECHO ============================================ && ^
-                    ECHO npm ci failed! Falling back to npm install... && ^
-                    ECHO ============================================ && ^
-                    npm install ^
+                ECHO Installing npm dependencies...
+                REM Attempt npm ci; fallback to npm install if it fails
+                cmd /c "npm ci" || (
+                    ECHO ============================================
+                    ECHO npm ci failed! Falling back to npm install...
+                    ECHO ============================================
+                    npm install
                 )
                 """
             }
@@ -40,15 +40,19 @@ pipeline {
         stage('Build Vite App') {
             steps {
                 bat """
-                cmd /c ^
-                ECHO Verifying Vite installation... && ^
-                npm list vite && ^
-                ECHO Running Vite build... && ^
-                npx vite build && ^
-                IF EXIST dist ( ^
-                    ECHO dist folder exists: && dir dist ^
-                ) ELSE ( ^
-                    ECHO dist folder not found! && exit /b 1 ^
+                ECHO Verifying Vite installation...
+                npm list vite
+
+                ECHO Running Vite build...
+                npx vite build
+
+                REM Fail if dist folder not created
+                IF NOT EXIST dist (
+                    ECHO dist folder not found! Vite build likely failed.
+                    EXIT /B 1
+                ) ELSE (
+                    ECHO dist folder successfully created.
+                    DIR dist
                 )
                 """
             }
@@ -56,20 +60,16 @@ pipeline {
 
         stage('Archive Build') {
             steps {
-                script {
-                    if (fileExists('dist')) {
-                        archiveArtifacts artifacts: 'dist/**', fingerprint: true
-                    } else {
-                        error "dist folder not found. Cannot archive artifacts."
-                    }
-                }
+                archiveArtifacts artifacts: 'dist/**', fingerprint: true
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                bat "docker build -t %IMAGE_NAME%:%IMAGE_TAG% ."
-                bat "docker tag %IMAGE_NAME%:%IMAGE_TAG% %DOCKERHUB_REPO%:%IMAGE_TAG%"
+                bat """
+                docker build -t %IMAGE_NAME%:%IMAGE_TAG% .
+                docker tag %IMAGE_NAME%:%IMAGE_TAG% %DOCKERHUB_REPO%:%IMAGE_TAG%
+                """
             }
         }
 
@@ -82,16 +82,20 @@ pipeline {
                         passwordVariable: 'DOCKERHUB_PASSWORD'
                     )
                 ]) {
-                    bat "echo %DOCKERHUB_PASSWORD% | docker login -u %DOCKERHUB_USERNAME% --password-stdin"
-                    bat "docker push %DOCKERHUB_REPO%:%IMAGE_TAG%"
+                    bat """
+                    echo %DOCKERHUB_PASSWORD% | docker login -u %DOCKERHUB_USERNAME% --password-stdin
+                    docker push %DOCKERHUB_REPO%:%IMAGE_TAG%
+                    """
                 }
             }
         }
 
         stage('Run Docker Container') {
             steps {
-                bat "docker rm -f %IMAGE_NAME% || echo Container not found"
-                bat "docker run -d --name %IMAGE_NAME% -p %HOST_PORT%:%CONTAINER_PORT% %DOCKERHUB_REPO%:%IMAGE_TAG%"
+                bat """
+                docker rm -f %IMAGE_NAME% || echo Container not found
+                docker run -d --name %IMAGE_NAME% -p %HOST_PORT%:%CONTAINER_PORT% %DOCKERHUB_REPO%:%IMAGE_TAG%
+                """
             }
         }
     }
