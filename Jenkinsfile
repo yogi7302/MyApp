@@ -11,7 +11,7 @@ pipeline {
     }
 
     tools {
-        nodejs 'NodeJS' // Name of the NodeJS installation configured in Jenkins (Manage Jenkins → Global Tool Configuration)
+        nodejs 'NodeJS' // Name of the NodeJS installation configured in Jenkins
     }
 
     stages {
@@ -29,7 +29,8 @@ pipeline {
 
         stage('Build Vite App') {
             steps {
-                bat 'call npm run build'
+                // Use npx to run the local Vite binary
+                bat 'npx vite build'
             }
         }
 
