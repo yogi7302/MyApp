@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        NODE_ENV = 'development'  // Ensure devDependencies (like Vite) are installed
+        NODE_ENV = 'development'   // ensures devDependencies (like Vite) are installed
         IMAGE_NAME = 'digital-artist-app'
         IMAGE_TAG = 'latest'
         DOCKERHUB_REPO = '07yogesh/digital-artist-app'
@@ -11,7 +11,7 @@ pipeline {
     }
 
     tools {
-        nodejs 'NodeJS'
+        nodejs 'NodeJS'  // Make sure this matches the NodeJS installation name in Jenkins
     }
 
     stages {
@@ -25,41 +25,42 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 bat """
-                ECHO Installing npm dependencies with devDependencies...
                 SET NODE_ENV=development
-
-                REM Attempt npm ci; fallback to npm install if it fails
+                ECHO Installing npm dependencies...
+                
+                REM First try npm ci
                 cmd /c "npm ci" || (
-                    ECHO ============================================
-                    ECHO npm ci failed! Falling back to npm install...
-                    ECHO ============================================
+                    ECHO npm ci failed, falling back to npm install...
                     npm install
                 )
+                
+                REM List installed packages to verify
+                npm list
                 """
             }
         }
 
         stage('Build Vite App') {
             steps {
-                dir("${WORKSPACE}") {
-                    bat """
-                    SET NODE_ENV=development
-                    ECHO Verifying Vite installation...
-                    npm list vite
+                bat """
+                SET NODE_ENV=development
+                ECHO Running Vite build with full logging...
 
-                    ECHO Running Vite build...
-                    npx vite build
+                REM Run Vite build and capture errors
+                npx vite build --force --debug || (
+                    ECHO ERROR: Vite build failed!
+                    EXIT /B 1
+                )
 
-                    REM Check if dist folder exists
-                    IF NOT EXIST dist (
-                        ECHO ERROR: dist folder not found! Vite build failed.
-                        EXIT /B 1
-                    ) ELSE (
-                        ECHO dist folder successfully created.
-                        DIR dist
-                    )
-                    """
-                }
+                REM Verify dist folder exists
+                IF NOT EXIST dist (
+                    ECHO ERROR: dist folder not found! Vite build failed.
+                    EXIT /B 1
+                ) ELSE (
+                    ECHO dist folder successfully created.
+                    DIR dist
+                )
+                """
             }
         }
 
@@ -107,10 +108,10 @@ pipeline {
 
     post {
         success {
-            echo 'Pipeline completed: Docker image built, pushed, and running at http://localhost:3000'
+            echo 'Pipeline completed successfully! App is running.'
         }
         failure {
-            echo 'Pipeline failed!'
+            echo 'Pipeline failed! Check the console output for errors.'
         }
     }
 }
