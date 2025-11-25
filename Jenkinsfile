@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        NODE_ENV = 'development'  // Fix: ensure devDependencies are installed
+        NODE_ENV = 'development'  // Ensure devDependencies are installed
         IMAGE_NAME = 'digital-artist-app'
         IMAGE_TAG = 'latest'
         DOCKERHUB_REPO = '07yogesh/digital-artist-app'
