@@ -23,7 +23,8 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                bat 'call npm install'
+                // Ensure devDependencies (like Vite) are installed
+                bat 'npm install --include=dev'
             }
         }
 
