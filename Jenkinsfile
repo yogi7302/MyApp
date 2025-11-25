@@ -10,6 +10,10 @@ pipeline {
         HOST_PORT = '3000'       // host port you want to expose
     }
 
+    tools {
+        nodejs 'NodeJS' // Name of the NodeJS installation configured in Jenkins (Manage Jenkins → Global Tool Configuration)
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -19,13 +23,13 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                bat 'npm install'
+                bat 'call npm install'
             }
         }
 
         stage('Build Vite App') {
             steps {
-                bat 'npm run build'
+                bat 'call npm run build'
             }
         }
 
@@ -53,6 +57,7 @@ pipeline {
 
         stage('Pull and Run Docker Image') {
             steps {
+                // Remove container if it exists
                 bat "docker rm -f %IMAGE_NAME% || echo Container not found"
                 bat "docker pull %DOCKERHUB_REPO%:%IMAGE_TAG%"
                 bat "docker run -d --name %IMAGE_NAME% -p %HOST_PORT%:%CONTAINER_PORT% %DOCKERHUB_REPO%:%IMAGE_TAG%"
