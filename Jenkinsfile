@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        NODE_ENV = 'development'   // ensures devDependencies (like Vite) are installed
+        NODE_ENV = 'development'  // Ensure devDependencies (like Vite) are installed
         IMAGE_NAME = 'digital-artist-app'
         IMAGE_TAG = 'latest'
         DOCKERHUB_REPO = '07yogesh/digital-artist-app'
@@ -11,7 +11,7 @@ pipeline {
     }
 
     tools {
-        nodejs 'NodeJS'  // Make sure this matches the NodeJS installation name in Jenkins
+        nodejs 'NodeJS'  // Make sure NodeJS tool is configured in Jenkins
     }
 
     stages {
@@ -25,15 +25,15 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 bat """
+                ECHO Installing npm dependencies with devDependencies...
                 SET NODE_ENV=development
-                ECHO Installing npm dependencies...
-                
-                REM First try npm ci
+
+                REM First try npm ci, fallback to npm install
                 cmd /c "npm ci" || (
                     ECHO npm ci failed, falling back to npm install...
                     npm install
                 )
-                
+
                 REM List installed packages to verify
                 npm list
                 """
@@ -46,8 +46,8 @@ pipeline {
                 SET NODE_ENV=development
                 ECHO Running Vite build with full logging...
 
-                REM Run Vite build and capture errors
-                npx vite build --force --debug || (
+                REM Run Vite build
+                npx vite build --debug || (
                     ECHO ERROR: Vite build failed!
                     EXIT /B 1
                 )
@@ -72,10 +72,8 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                bat """
-                docker build -t %IMAGE_NAME%:%IMAGE_TAG% .
-                docker tag %IMAGE_NAME%:%IMAGE_TAG% %DOCKERHUB_REPO%:%IMAGE_TAG%
-                """
+                bat "docker build -t %IMAGE_NAME%:%IMAGE_TAG% ."
+                bat "docker tag %IMAGE_NAME%:%IMAGE_TAG% %DOCKERHUB_REPO%:%IMAGE_TAG%"
             }
         }
 
@@ -88,27 +86,23 @@ pipeline {
                         passwordVariable: 'DOCKERHUB_PASSWORD'
                     )
                 ]) {
-                    bat """
-                    echo %DOCKERHUB_PASSWORD% | docker login -u %DOCKERHUB_USERNAME% --password-stdin
-                    docker push %DOCKERHUB_REPO%:%IMAGE_TAG%
-                    """
+                    bat "echo %DOCKERHUB_PASSWORD% | docker login -u %DOCKERHUB_USERNAME% --password-stdin"
+                    bat "docker push %DOCKERHUB_REPO%:%IMAGE_TAG%"
                 }
             }
         }
 
         stage('Run Docker Container') {
             steps {
-                bat """
-                docker rm -f %IMAGE_NAME% || echo Container not found
-                docker run -d --name %IMAGE_NAME% -p %HOST_PORT%:%CONTAINER_PORT% %DOCKERHUB_REPO%:%IMAGE_TAG%
-                """
+                bat "docker rm -f %IMAGE_NAME% || echo Container not found"
+                bat "docker run -d --name %IMAGE_NAME% -p %HOST_PORT%:%CONTAINER_PORT% %DOCKERHUB_REPO%:%IMAGE_TAG%"
             }
         }
     }
 
     post {
         success {
-            echo 'Pipeline completed successfully! App is running.'
+            echo 'Pipeline completed: Docker image built, pushed, and running at http://localhost:3000'
         }
         failure {
             echo 'Pipeline failed! Check the console output for errors.'
