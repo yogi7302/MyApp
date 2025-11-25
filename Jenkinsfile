@@ -5,7 +5,7 @@ pipeline {
         NODE_ENV = 'production'
         IMAGE_NAME = 'digital-artist-app'
         IMAGE_TAG = 'latest'
-        DOCKERHUB_REPO = 'yourdockerhubusername/digital-artist-app' // replace with your Docker Hub repo
+        DOCKERHUB_REPO = '07yogesh/digital-artist-app' // replace with your Docker Hub repo
         CONTAINER_PORT = '3000'  // internal app port in Docker
         HOST_PORT = '3000'       // host port you want to expose
     }
@@ -13,7 +13,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/yourusername/your-repo.git'
+                git branch: 'main', url: 'https://github.com/yogi7302/MyApp.git'
             }
         }
 
