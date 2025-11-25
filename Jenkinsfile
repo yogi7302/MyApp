@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        NODE_ENV = 'production'
+        NODE_ENV = 'development'  // Fix: ensure devDependencies are installed
         IMAGE_NAME = 'digital-artist-app'
         IMAGE_TAG = 'latest'
         DOCKERHUB_REPO = '07yogesh/digital-artist-app'
@@ -25,9 +25,9 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 bat """
-                ECHO Attempting npm ci...
+                ECHO Installing npm dependencies...
 
-                REM Run npm ci but DO NOT stop the batch on failure
+                REM Attempt npm ci; fallback to npm install if it fails
                 cmd /c "npm ci" || (
                     ECHO ============================================
                     ECHO npm ci failed! Falling back to npm install...
@@ -40,7 +40,12 @@ pipeline {
 
         stage('Build Vite App') {
             steps {
-                bat 'npx vite build'
+                bat """
+                ECHO Verifying Vite installation...
+                npm list vite
+                ECHO Running Vite build...
+                npx vite build
+                """
             }
         }
 
