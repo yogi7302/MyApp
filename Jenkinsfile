@@ -25,13 +25,13 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 bat """
-                ECHO Installing npm dependencies...
-                REM Attempt npm ci; fallback to npm install if it fails
-                cmd /c "npm ci" || (
-                    ECHO ============================================
-                    ECHO npm ci failed! Falling back to npm install...
-                    ECHO ============================================
-                    npm install
+                cmd /c ^
+                ECHO Installing npm dependencies... && ^
+                npm ci || ( ^
+                    ECHO ============================================ && ^
+                    ECHO npm ci failed! Falling back to npm install... && ^
+                    ECHO ============================================ && ^
+                    npm install ^
                 )
                 """
             }
@@ -40,16 +40,15 @@ pipeline {
         stage('Build Vite App') {
             steps {
                 bat """
-                ECHO Verifying Vite installation...
-                npm list vite
-                ECHO Running Vite build...
-                npx vite build
-                ECHO Listing dist folder contents...
-                if exist dist (
-                    dir dist
-                ) else (
-                    ECHO dist folder not found
-                    exit /b 1
+                cmd /c ^
+                ECHO Verifying Vite installation... && ^
+                npm list vite && ^
+                ECHO Running Vite build... && ^
+                npx vite build && ^
+                IF EXIST dist ( ^
+                    ECHO dist folder exists: && dir dist ^
+                ) ELSE ( ^
+                    ECHO dist folder not found! && exit /b 1 ^
                 )
                 """
             }
@@ -57,7 +56,6 @@ pipeline {
 
         stage('Archive Build') {
             steps {
-                // Only archive if dist exists
                 script {
                     if (fileExists('dist')) {
                         archiveArtifacts artifacts: 'dist/**', fingerprint: true
