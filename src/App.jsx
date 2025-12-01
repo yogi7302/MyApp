@@ -1,188 +1,138 @@
 import React, { useState, useEffect, useMemo } from "react";
+import Carousel from "@/components/Carousel";
+import ArtModal from "@/components/ArtModal";
+import CustomForm from "@/components/CustomForm";
+import ContactForm from "@/components/ContactForm";
+import CheckoutForm from "@/components/CheckoutForm";
 
-export default function App() {
-  // ------------------ Artwork Data (expanded with 6 more items; several marked sold) ------------------
+export default function Index() {
   const initialArtworks = [
     {
-      id: "a1",
-      title: "Moonlit Blossom",
-      priceBase: 60,
-      image:
-        "https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?w=1200&q=80&auto=format&fit=crop",
-      tags: ["floral", "digital"],
-      sold: false,
-      description: "Soft pastel floral with moon veins.",
+      id"a1",
+      title"Moonlit Blossom",
+      priceBase"https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?w=1200&q=80&auto=format&fit=crop",
+      tags"floral", "digital"],
+      sold"Soft pastel floral with moon veins.",
     },
     {
-      id: "a2",
-      title: "Neon Cityscape",
-      priceBase: 95,
-      image:
-        "https://images.unsplash.com/photo-1503602642458-232111445657?w=1200&q=80&auto=format&fit=crop",
-      tags: ["city", "neon"],
-      sold: false,
-      description: "A dreamy neon skyline study.",
+      id"a2",
+      title"Neon Cityscape",
+      priceBase"https://images.unsplash.com/photo-1503602642458-232111445657?w=1200&q=80&auto=format&fit=crop",
+      tags"city", "neon"],
+      sold"A dreamy neon skyline study.",
     },
     {
-      id: "a3",
-      title: "Quiet Lake",
-      priceBase: 40,
-      image:
-        "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=1200&q=80&auto=format&fit=crop",
-      tags: ["landscape", "calm"],
-      sold: true,
-      description: "Original sold piece — tranquil waters.",
+      id"a3",
+      title"Quiet Lake",
+      priceBase"https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=1200&q=80&auto=format&fit=crop",
+      tags"landscape", "calm"],
+      sold"Original sold piece — tranquil waters.",
     },
     {
-      id: "a4",
-      title: "Custom Portrait Sample",
-      priceBase: 120,
-      image:
-        "https://images.unsplash.com/photo-1542377287-2a2e23f8b3f4?w=1200&q=80&auto=format&fit=crop",
-      tags: ["portrait", "commission"],
-      sold: false,
-      description: "Example of a customizable portrait.",
-      customizable: true,
-    },
-
-    // Existing added artworks
+      id"a4",
+      title"Custom Portrait Sample",
+      priceBase"https://images.unsplash.com/photo-1542377287-2a2e23f8b3f4?w=1200&q=80&auto=format&fit=crop",
+      tags"portrait", "commission"],
+      sold"Example of a customizable portrait.",
+      customizable},
     {
-      id: "a5",
-      title: "Pastel Harbor",
-      priceBase: 55,
-      image:
-        "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=80&auto=format&fit=crop",
-      tags: ["landscape", "pastel"],
-      sold: false,
-      description: "Harbor at dusk in soft tones.",
+      id"a5",
+      title"Pastel Harbor",
+      priceBase"https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=80&auto=format&fit=crop",
+      tags"landscape", "pastel"],
+      sold"Harbor at dusk in soft tones.",
     },
     {
-      id: "a6",
-      title: "Saffron Fields",
-      priceBase: 70,
-      image:
-        "https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=1200&q=80&auto=format&fit=crop",
-      tags: ["landscape", "fields"],
-      sold: true,
-      description: "Warm fields study — sold original.",
+      id"a6",
+      title"Saffron Fields",
+      priceBase"https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=1200&q=80&auto=format&fit=crop",
+      tags"landscape", "fields"],
+      sold"Warm fields study — sold original.",
     },
     {
-      id: "a7",
-      title: "Digital Orchid",
-      priceBase: 48,
-      image:
-        "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1200&q=80&auto=format&fit=crop",
-      tags: ["floral", "digital"],
-      sold: false,
-      description: "Botanical digital piece — limited run.",
+      id"a7",
+      title"Digital Orchid",
+      priceBase"https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1200&q=80&auto=format&fit=crop",
+      tags"floral", "digital"],
+      sold"Botanical digital piece — limited run.",
     },
     {
-      id: "a8",
-      title: "Retro Skyline",
-      priceBase: 82,
-      image:
-        "https://images.unsplash.com/photo-1549888834-1d2a6f4a9a2f?w=1200&q=80&auto=format&fit=crop",
-      tags: ["city", "retro"],
-      sold: true,
-      description: "A small retro-inspired city print (sold).",
+      id"a8",
+      title"Retro Skyline",
+      priceBase"https://images.unsplash.com/photo-1549888834-1d2a6f4a9a2f?w=1200&q=80&auto=format&fit=crop",
+      tags"city", "retro"],
+      sold"A small retro-inspired city print (sold).",
     },
     {
-      id: "a9",
-      title: "Gentle Waves",
-      priceBase: 38,
-      image:
-        "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1200&q=80&auto=format&fit=crop",
-      tags: ["ocean", "calm"],
-      sold: false,
-      description: "Minimal seascape, calming palette.",
+      id"a9",
+      title"Gentle Waves",
+      priceBase"https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1200&q=80&auto=format&fit=crop",
+      tags"ocean", "calm"],
+      sold"Minimal seascape, calming palette.",
     },
     {
-      id: "a10",
-      title: "Lilac Afternoon",
-      priceBase: 66,
-      image:
-        "https://images.unsplash.com/photo-1482192596544-9eb780fc7f66?w=1200&q=80&auto=format&fit=crop",
-      tags: ["floral", "pastel"],
-      sold: false,
-      description: "Pastel floral arrangement.",
-    },
-
-    // NEW sold artworks (6 additional items requested)
-    {
-      id: "a11",
-      title: "Crimson Dunes",
-      priceBase: 85,
-      image:
-        "https://images.unsplash.com/photo-1508264165352-cb7a1f6b7a0c?w=1200&q=80&auto=format&fit=crop",
-      tags: ["landscape", "desert"],
-      sold: true,
-      description: "Warm desert study — sold original.",
+      id"a10",
+      title"Lilac Afternoon",
+      priceBase"https://images.unsplash.com/photo-1482192596544-9eb780fc7f66?w=1200&q=80&auto=format&fit=crop",
+      tags"floral", "pastel"],
+      sold"Pastel floral arrangement.",
     },
     {
-      id: "a12",
-      title: "Silk Road Remnant",
-      priceBase: 110,
-      image:
-        "https://images.unsplash.com/photo-1501785888041-af3ef285b470?ixlib=rb-1.2.1&w=1200&q=80&auto=format&fit=crop",
-      tags: ["travel", "digital"],
-      sold: true,
-      description: "Mixed-media inspired piece, sold to a collector.",
+      id"a11",
+      title"Crimson Dunes",
+      priceBase"https://images.unsplash.com/photo-1508264165352-cb7a1f6b7a0c?w=1200&q=80&auto=format&fit=crop",
+      tags"landscape", "desert"],
+      sold"Warm desert study — sold original.",
     },
     {
-      id: "a13",
-      title: "Azure Window",
-      priceBase: 75,
-      image:
-        "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200&q=80&auto=format&fit=crop",
-      tags: ["ocean", "architectural"],
-      sold: true,
-      description: "Seascape with architectural linework — sold.",
+      id"a12",
+      title"Silk Road Remnant",
+      priceBase"https://images.unsplash.com/photo-1501785888041-af3ef285b470?ixlib=rb-1.2.1&w=1200&q=80&auto=format&fit=crop",
+      tags"travel", "digital"],
+      sold"Mixed-media inspired piece, sold to a collector.",
     },
     {
-      id: "a14",
-      title: "Golden Alley",
-      priceBase: 54,
-      image:
-        "https://images.unsplash.com/photo-1504198453319-5ce911bafcde?w=1200&q=80&auto=format&fit=crop",
-      tags: ["city", "street"],
-      sold: true,
-      description: "Small alley study capturing golden hour — sold.",
+      id"a13",
+      title"Azure Window",
+      priceBase"https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200&q=80&auto=format&fit=crop",
+      tags"ocean", "architectural"],
+      sold"Seascape with architectural linework — sold.",
     },
     {
-      id: "a15",
-      title: "Violet Orchard",
-      priceBase: 68,
-      image:
-        "https://images.unsplash.com/photo-1524594154904-8d4b4b4b9f3b?w=1200&q=80&auto=format&fit=crop",
-      tags: ["floral", "orchard"],
-      sold: true,
-      description: "Limited edition print from the orchard series — sold.",
+      id"a14",
+      title"Golden Alley",
+      priceBase"https://images.unsplash.com/photo-1504198453319-5ce911bafcde?w=1200&q=80&auto=format&fit=crop",
+      tags"city", "street"],
+      sold"Small alley study capturing golden hour — sold.",
     },
     {
-      id: "a16",
-      title: "Hushed Metro",
-      priceBase: 92,
-      image:
-        "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=1200&q=80&auto=format&fit=crop",
-      tags: ["city", "metro"],
-      sold: true,
-      description: "Metro study in muted tones — sold to a gallery.",
+      id"a15",
+      title"Violet Orchard",
+      priceBase"https://images.unsplash.com/photo-1524594154904-8d4b4b4b9f3b?w=1200&q=80&auto=format&fit=crop",
+      tags"floral", "orchard"],
+      sold"Limited edition print from the orchard series — sold.",
+    },
+    {
+      id"a16",
+      title"Hushed Metro",
+      priceBase"https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=1200&q=80&auto=format&fit=crop",
+      tags"city", "metro"],
+      sold"Metro study in muted tones — sold to a gallery.",
     },
   ];
 
   const sizes = [
-    { id: "s", label: "Small (12x16)", multiplier: 1 },
-    { id: "m", label: "Medium (18x24)", multiplier: 1.5 },
-    { id: "l", label: "Large (24x36)", multiplier: 2.2 },
+    { id"s", label"Small (12x16)", multiplier},
+    { id"m", label"Medium (18x24)", multiplier.5 },
+    { id"l", label"Large (24x36)", multiplier.2 },
   ];
 
   const frames = [
-    { id: "none", label: "No frame", price: 0 },
-    { id: "wood", label: "Wood frame", price: 20 },
-    { id: "gold", label: "Gold frame", price: 45 },
+    { id"none", label"No frame", price},
+    { id"wood", label"Wood frame", price},
+    { id"gold", label"Gold frame", price},
   ];
 
-  // ------------------ State ------------------
   const [artworks] = useState(initialArtworks);
   const [query, setQuery] = useState("");
   const [filterTag, setFilterTag] = useState("all");
@@ -196,28 +146,25 @@ export default function App() {
     }
   });
 
-  const [selectedArt, setSelectedArt] = useState(null);
+  const [selectedArt, setSelectedArt] = useState<typeof artworks[0] | null>(null);
   const [checkoutView, setCheckoutView] = useState(false);
 
-  // ------------------ Testimonials (expanded to 8) ------------------
   const [testimonials] = useState([
-    { id: 1, name: "Rina K.", text: "Absolutely lovely — the colors and details are perfect.", rating: 5 },
-    { id: 2, name: "Marco P.", text: "Quick response and a beautiful framed print arrived safe.", rating: 5 },
-    { id: 3, name: "Elsa W.", text: "Commission exceeded expectations — great communication.", rating: 5 },
-    { id: 4, name: "Jon D.", text: "High-quality print and fast shipping.", rating: 4 },
-    { id: 5, name: "Maya L.", text: "Colors are gorgeous in person.", rating: 5 },
-    { id: 6, name: "Sam R.", text: "Perfect gift — the recipient loved it.", rating: 5 },
-    { id: 7, name: "Priya S.", text: "Smooth process from concept to delivery.", rating: 5 },
-    { id: 8, name: "Luca B.", text: "Beautiful framing and packaging.", rating: 4 },
+    { id"Rina K.", text"Absolutely lovely — the colors and details are perfect.", rating},
+    { id"Marco P.", text"Quick response and a beautiful framed print arrived safe.", rating},
+    { id"Elsa W.", text"Commission exceeded expectations — great communication.", rating},
+    { id"Jon D.", text"High-quality print and fast shipping.", rating},
+    { id"Maya L.", text"Colors are gorgeous in person.", rating},
+    { id"Sam R.", text"Perfect gift — the recipient loved it.", rating},
+    { id"Priya S.", text"Smooth process from concept to delivery.", rating},
+    { id"Luca B.", text"Beautiful framing and packaging.", rating},
   ]);
 
-  // Save cart to local storage
   useEffect(() => {
     localStorage.setItem("cart_v1", JSON.stringify(cart));
   }, [cart]);
 
-  // ------------------ Utility Functions ------------------
-  const calculatePrice = (base, { sizeId = "s", frameId = "none", customization = 0 } = {}) => {
+  const calculatePrice = (base{ sizeId = "s", frameId = "none", customization = 0 } = {}) => {
     const size = sizes.find((s) => s.id === sizeId) || sizes[0];
     const frame = frames.find((f) => f.id === frameId) || frames[0];
 
@@ -230,18 +177,18 @@ export default function App() {
   const fmt = (v) => `$${v.toFixed(2)}`;
 
   const addToCart = (item) =>
-    setCart((c) => [...c, { ...item, cartId: Date.now() + Math.random() }]);
+    setCart((c) => [...c, { ...item, cartId.now() + Math.random() }]);
 
   const removeCartItem = (cartId) =>
-    setCart((c) => c.filter((i) => i.cartId !== cartId));
+    setCart((c) => c.filter((i) => i.cartId == cartId));
 
   const clearCart = () => setCart([]);
 
   const filtered = useMemo(() => {
     return artworks.filter((a) => {
       if (onlyAvailable && a.sold) return false;
-      if (filterTag !== "all" && !a.tags.includes(filterTag)) return false;
-      if (query && !`${a.title} ${a.description} ${a.tags.join(" ")}`.toLowerCase().includes(query.toLowerCase()))
+      if (filterTag == "all" && a.tags.includes(filterTag)) return false;
+      if (query && `${a.title} ${a.description} ${a.tags.join(" ")}`.toLowerCase().includes(query.toLowerCase()))
         return false;
       return true;
     });
@@ -254,7 +201,6 @@ export default function App() {
     alert("Order placed (demo)");
   };
 
-  // ------------------ UI ------------------
   return (
     <div className="min-h-screen bg-gradient-to-tr from-pink-50 via-white to-pink-25 text-gray-800">
       {/* HEADER */}
@@ -270,28 +216,28 @@ export default function App() {
             </div>
           </div>
 
-          <nav className="hidden md:flex gap-3 items-center">
-            <a href="#gallery" className="text-sm hover:underline">Gallery</a>
-            <a href="#sold" className="text-sm hover:underline">Sold</a>
-            <a href="#custom" className="text-sm hover:underline">Custom</a>
-            <a href="#about" className="text-sm hover:underline">Newsletter</a>
-            <a href="#contact" className="text-sm hover:underline">Contact</a>
+          <nav className="hidden md-3 items-center">
+            <a href="#gallery" className="text-sm hover">Gallery</a>
+            <a href="#sold" className="text-sm hover">Sold</a>
+            <a href="#custom" className="text-sm hover">Custom</a>
+            <a href="#about" className="text-sm hover">Newsletter</a>
+            <a href="#contact" className="text-sm hover">Contact</a>
           </nav>
 
           <div className="flex items-center gap-3">
-            <div className="hidden md:flex border rounded-lg px-3 py-1 items-center gap-2 bg-white">
+            <div className="hidden md-lg px-3 py-1 items-center gap-2 bg-white">
               <input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search artworks..."
-                className="outline-none text-sm placeholder:text-gray-400"
+                className="outline-none text-sm placeholder-gray-400"
               />
             </div>
 
             {/* CART BUTTON */}
             <button
               className="relative"
-              onClick={() => setCheckoutView((s) => !s)}
+              onClick={() => setCheckoutView((s) => s)}
               aria-label="Open Cart"
             >
               <svg
@@ -323,9 +269,9 @@ export default function App() {
       <main className="max-w-6xl mx-auto px-4 py-8">
 
         {/* HERO */}
-        <section className="mb-8 grid md:grid-cols-2 gap-6 items-center">
+        <section className="mb-8 grid md-cols-2 gap-6 items-center">
           <div>
-            <h2 className="text-3xl md:text-4xl font-extrabold">
+            <h2 className="text-3xl md-4xl font-extrabold">
               Soft digital art, ready for your space.
             </h2>
             <p className="mt-3 text-gray-600">
@@ -351,9 +297,9 @@ export default function App() {
         </section>
 
         {/* FILTERS */}
-        <section className="mb-6 flex flex-col md:flex-row gap-3 items-center justify-between">
+        <section className="mb-6 flex flex-col md-row gap-3 items-center justify-between">
           <div className="flex gap-2 items-center">
-            <label className="text-sm">Filter:</label>
+            <label className="text-sm">Filter/label>
             <select
               value={filterTag}
               onChange={(e) => setFilterTag(e.target.value)}
@@ -378,7 +324,7 @@ export default function App() {
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="md:hidden">
+            <div className="md">
               <input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
@@ -421,7 +367,7 @@ export default function App() {
                       View
                     </button>
 
-                    {!a.sold && (
+                    {a.sold && (
                       <button className="text-sm px-3 py-1 rounded bg-pink-600 text-white" onClick={() => setSelectedArt(a)}>
                         Buy
                       </button>
@@ -430,7 +376,7 @@ export default function App() {
                 </div>
               </div>
             </article>
-          )} perPage={{ base: 1, sm: 2, md: 3 }} />
+          )} perPage={{ base}} />
 
         </section>
 
@@ -452,7 +398,7 @@ export default function App() {
                 </div>
               </div>
             )}
-            perPage={{ base: 1, sm: 2, md: 3 }}
+            perPage={{ base}}
           />
         </section>
 
@@ -460,7 +406,7 @@ export default function App() {
         <section id="custom" className="mb-12">
           <h3 className="text-2xl font-semibold mb-4">Custom & Commissioned Artworks</h3>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+          <div className="grid grid-cols-1 md-cols-2 gap-6 items-start">
             {/* FORM */}
             <div className="bg-white p-6 rounded-lg shadow-sm">
               <h4 className="font-semibold">Commission a custom piece</h4>
@@ -469,7 +415,7 @@ export default function App() {
               </p>
 
               <CustomForm
-                artwork={{ title: "Custom Portrait", priceBase: 120, image: artworks[3].image }}
+                artwork={{ title"Custom Portrait", priceBase.image }}
                 sizes={sizes}
                 frames={frames}
                 calculatePrice={calculatePrice}
@@ -492,7 +438,7 @@ export default function App() {
               <div className="bg-white p-4 rounded-lg shadow-sm">
                 <h5 className="font-semibold">Turnaround</h5>
                 <p className="text-sm text-gray-600">
-                  Typical commission time: 1–3 weeks depending on complexity.
+                  Typical commission time–3 weeks depending on complexity.
                 </p>
               </div>
             </div>
@@ -521,27 +467,27 @@ export default function App() {
                 <p className="mt-3 text-sm text-gray-600">{t.text}</p>
               </div>
             )}
-            perPage={{ base: 1, md: 2 }}
+            perPage={{ base}}
           />
         </section>
 
         {/* CONTACT & ABOUT */}
-        <section id="contact" className="mb-16 grid md:grid-cols-2 gap-6">
+        <section id="contact" className="mb-16 grid md-cols-2 gap-6">
           <div className="bg-white p-6 rounded-lg shadow-sm">
             <h3 className="text-2xl font-semibold mb-2">Contact</h3>
             <p className="text-sm text-gray-600">
               Questions? Send a message below and I'll get back to you.
             </p>
 
-            <ContactForm onSend={(d) => alert("Message sent: " + JSON.stringify(d))} />
+            <ContactForm onSend={(d) => alert("Message sent" + JSON.stringify(d))} />
           </div>
 
-          {/* Right column: About the Artist */}
+          {/* Right column*/}
           <div className="bg-white p-6 rounded-2xl shadow-lg">
             <div className="flex flex-col gap-4 items-center text-center">
-              <h4 className="text-2xl md:text-3xl font-semibold leading-tight">About the Artist</h4>
+              <h4 className="text-2xl md-3xl font-semibold leading-tight">About the Artist</h4>
 
-              <div className="w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden shadow-md border border-pink-50">
+              <div className="w-24 h-24 md-28 md-28 rounded-full overflow-hidden shadow-md border border-pink-50">
                 <img
                   src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=400&q=80"
                   alt="Artist portrait"
@@ -556,10 +502,10 @@ export default function App() {
               <div className="pt-3 border-t border-gray-100 w-full mt-2">
                 <h5 className="text-sm font-medium text-gray-700 mb-3 text-left">Contact & Social</h5>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm-cols-2 gap-3">
                   <a
-                    href="mailto:hello@digitalartist.com"
-                    className="flex items-center gap-3 rounded-md bg-pink-50/40 p-3 text-sm text-gray-800 hover:bg-pink-50 transition"
+                    href="mailto@digitalartist.com"
+                    className="flex items-center gap-3 rounded-md bg-pink-50/40 p-3 text-sm text-gray-800 hover-pink-50 transition"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M2 6.5C2 5.67 2.67 5 3.5 5h17c.83 0 1.5.67 1.5 1.5v11c0 .83-.67 1.5-1.5 1.5h-17A1.5 1.5 0 0 1 2 17.5v-11zM4.06 6l7.44 5.05c.3.2.7.2 1 0L20 6H4.06z"/>
@@ -575,7 +521,7 @@ export default function App() {
                     href="https://www.instagram.com/digitalartist"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-3 rounded-md bg-pink-50/40 p-3 text-sm text-gray-800 hover:bg-pink-50 transition"
+                    className="flex items-center gap-3 rounded-md bg-pink-50/40 p-3 text-sm text-gray-800 hover-pink-50 transition"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm5 6.2A4.8 4.8 0 1 0 16.8 13 4.8 4.8 0 0 0 12 8.2zM18.6 6.2a1.1 1.1 0 1 1-1.1-1.1 1.1 1.1 0 0 1 1.1 1.1z"/>
@@ -589,7 +535,7 @@ export default function App() {
 
                   <a
                     href="tel:+12345678900"
-                    className="flex items-center gap-3 rounded-md bg-pink-50/40 p-3 text-sm text-gray-800 hover:bg-pink-50 transition"
+                    className="flex items-center gap-3 rounded-md bg-pink-50/40 p-3 text-sm text-gray-800 hover-pink-50 transition"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.24 11 11 0 0 0 3.5.56 1 1 0 0 1 1 1v3.5a1 1 0 0 1-1 1A18 18 0 0 1 3 5a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11 11 0 0 0 .56 3.5 1 1 0 0 1-.24 1l-2.2 2.2z"/>
@@ -603,8 +549,8 @@ export default function App() {
 
                   <a
                     href="#"
-                    onClick={(e) => { e.preventDefault(); alert('Location: Remote / Ships worldwide'); }}
-                    className="flex items-center gap-3 rounded-md bg-pink-50/40 p-3 text-sm text-gray-800 hover:bg-pink-50 transition"
+                    onClick={(e) => { e.preventDefault(); alert('Location/ Ships worldwide'); }}
+                    className="flex items-center gap-3 rounded-md bg-pink-50/40 p-3 text-sm text-gray-800 hover-pink-50 transition"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 14.5 9 2.5 2.5 0 0 1 12 11.5z"/>
@@ -634,9 +580,9 @@ export default function App() {
               onSubmit={(e) => {
                 e.preventDefault();
                 alert("Joined newsletter (demo)");
-                e.target.reset();
+                e.currentTarget.reset();
               }}
-              className="mt-1 flex flex-col sm:flex-row gap-3 items-start"
+              className="mt-1 flex flex-col sm-row gap-3 items-start"
             >
               <input
                 name="email"
@@ -668,8 +614,8 @@ export default function App() {
 
       {/* ================= CART / CHECKOUT DRAWER ================= */}
       <div
-        className={`fixed right-4 bottom-4 md:bottom-8 md:right-8 w-full md:w-96 transition-all ${
-          checkoutView ? "translate-y-0" : "translate-y-10 opacity-0"
+        className={`fixed right-4 bottom-4 md-8 md-8 w-full md-96 transition-all ${
+          checkoutView ? "translate-y-0" "translate-y-10 opacity-0"
         }`}
       >
         <div className="bg-white rounded-lg shadow-lg p-4">
@@ -772,397 +718,13 @@ export default function App() {
   );
 }
 
-function Carousel({ items = [], itemRenderer, perPage = { base: 1, sm: 2, md: 3 } }) {
-  const [index, setIndex] = useState(0);
-
-  const getPerPage = () => {
-    if (typeof window === "undefined") return perPage.base || 1;
-    const w = window.innerWidth;
-    if (w >= 1024) return perPage.lg ?? perPage.md ?? perPage.sm ?? perPage.base ?? 1;
-    if (w >= 768) return perPage.md ?? perPage.sm ?? perPage.base ?? 1;
-    if (w >= 640) return perPage.sm ?? perPage.base ?? 1;
-    return perPage.base ?? 1;
-  };
-
-  const [visible, setVisible] = useState(getPerPage());
-
-  useEffect(() => {
-    const onResize = () => setVisible(getPerPage());
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const maxIndex = Math.max(0, Math.ceil(items.length / visible) - 1);
-
-  useEffect(() => {
-    if (index > maxIndex) setIndex(maxIndex);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [visible, items.length, maxIndex]);
-
-  const prev = () => setIndex((i) => Math.max(0, i - 1));
-  const next = () => setIndex((i) => Math.min(maxIndex, i + 1));
-
-  if (!items || items.length === 0) {
-    return <div className="text-sm text-gray-500">No items</div>;
-  }
-
-  const startIdx = index * visible;
-  const endIdx = Math.min(startIdx + visible, items.length);
-  const visibleItems = items.slice(startIdx, endIdx);
-
-  return (
-    <div className="relative">
-      <div className="flex items-center justify-between mb-3">
-        <div className="text-sm text-gray-600">{items.length} items</div>
-
-        <div className="flex gap-2">
-          <button
-            onClick={prev}
-            disabled={index === 0}
-            className={`px-3 py-1 border rounded ${index === 0 ? "opacity-50 cursor-not-allowed" : ""}`}
-            aria-label="Previous"
-          >
-            ‹
-          </button>
-          <button
-            onClick={next}
-            disabled={index >= maxIndex}
-            className={`px-3 py-1 border rounded ${index >= maxIndex ? "opacity-50 cursor-not-allowed" : ""}`}
-            aria-label="Next"
-          >
-            ›
-          </button>
-        </div>
-      </div>
-
-      <div className="grid gap-2 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
-        {visibleItems.map((it, i) => (
-          <div key={startIdx + i} className="w-full">
-            {itemRenderer(it)}
-          </div>
-        ))}
-      </div>
-
-      <div className="flex gap-2 justify-center mt-3">
-        {Array.from({ length: Math.max(1, maxIndex + 1) }).map((_, i) => (
-          <button
-            key={i}
-            onClick={() => setIndex(i)}
-            className={`w-2 h-2 rounded-full ${i === index ? "bg-pink-600" : "bg-gray-300"}`}
-            aria-label={`Go to slide ${i + 1}`}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function ArtModal({ art, onClose, sizes, frames, calculatePrice, onAdd, fmt }) {
-  const [sizeId, setSizeId] = useState(sizes[0].id);
-  const [frameId, setFrameId] = useState(frames[0].id);
-  const [customFee, setCustomFee] = useState(0);
-
-  const price = calculatePrice(art.priceBase, {
-    sizeId,
-    frameId,
-    customization: Number(customFee),
-  });
-
-  return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg max-w-3xl w-full overflow-auto">
-        <div className="flex items-start gap-4">
-          <img
-            src={art.image}
-            alt={art.title}
-            className="w-1/2 object-cover h-72 rounded-l"
-          />
-
-          <div className="p-4 flex-1">
-            <div className="flex items-start justify-between">
-              <div>
-                <h4 className="text-xl font-semibold">{art.title}</h4>
-                <p className="text-sm text-gray-500 mt-1">{art.description}</p>
-              </div>
-
-              <button onClick={onClose} className="text-gray-400">✕</button>
-            </div>
-
-            <div className="mt-4 space-y-3">
-              <div>
-                <label className="text-sm">Size</label>
-                <select
-                  value={sizeId}
-                  onChange={(e) => setSizeId(e.target.value)}
-                  className="block mt-1 rounded border p-2 w-full"
-                >
-                  {sizes.map((s) => (
-                    <option key={s.id} value={s.id}>
-                      {s.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="text-sm">Frame</label>
-                <select
-                  value={frameId}
-                  onChange={(e) => setFrameId(e.target.value)}
-                  className="block mt-1 rounded border p-2 w-full"
-                >
-                  {frames.map((f) => (
-                    <option key={f.id} value={f.id}>
-                      {f.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="text-sm">Customization fee (optional)</label>
-                <input
-                  type="number"
-                  min="0"
-                  value={customFee}
-                  onChange={(e) => setCustomFee(e.target.value)}
-                  className="block mt-1 rounded border p-2 w-full"
-                />
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div className="text-sm text-gray-600">Price preview</div>
-                <div className="text-lg font-semibold text-pink-600">
-                  {fmt(price)}
-                </div>
-              </div>
-
-              <div className="flex gap-2">
-                <button
-                  onClick={() =>
-                    onAdd({
-                      artId: art.id,
-                      image: art.image,
-                      title: art.title,
-                      sizeId,
-                      sizeLabel: sizes.find((s) => s.id === sizeId).label,
-                      frameId,
-                      frameLabel: frames.find((f) => f.id === frameId).label,
-                      customization: Number(customFee),
-                      price,
-                    })
-                  }
-                  className="flex-1 bg-pink-600 text-white rounded p-2"
-                >
-                  Add to cart
-                </button>
-
-                <button onClick={onClose} className="flex-1 border rounded p-2">
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function CustomForm({ artwork, sizes, frames, calculatePrice, onAdd, fmt }) {
-  const [sizeId, setSizeId] = useState(sizes[0].id);
-  const [frameId, setFrameId] = useState(frames[0].id);
-  const [notes, setNotes] = useState("");
-  const [customFee, setCustomFee] = useState(0);
-
-  const price = calculatePrice(artwork.priceBase, {
-    sizeId,
-    frameId,
-    customization: Number(customFee),
-  });
-
-  return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-
-        onAdd({
-          artId: "custom",
-          image: artwork.image,
-          title: artwork.title,
-          sizeId,
-          sizeLabel: sizes.find((s) => s.id === sizeId).label,
-          frameId,
-          frameLabel: frames.find((f) => f.id === frameId).label,
-          notes,
-          customization: Number(customFee),
-          price,
-        });
-
-        alert("Added custom commission to cart (demo)");
-      }}
-      className="mt-4 space-y-3"
-    >
-      <div>
-        <label className="text-sm">Size</label>
-        <select
-          value={sizeId}
-          onChange={(e) => setSizeId(e.target.value)}
-          className="block mt-1 rounded border p-2 w-full"
-        >
-          {sizes.map((s) => (
-            <option key={s.id} value={s.id}>
-              {s.label}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div>
-        <label className="text-sm">Frame</label>
-        <select
-          value={frameId}
-          onChange={(e) => setFrameId(e.target.value)}
-          className="block mt-1 rounded border p-2 w-full"
-        >
-          {frames.map((f) => (
-            <option key={f.id} value={f.id}>
-              {f.label}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div>
-        <label className="text-sm">Customization notes</label>
-        <textarea
-          value={notes}
-          onChange={(e) => setNotes(e.target.value)}
-          placeholder="Color palette, subject..."
-          className="block mt-1 rounded border p-2 w-full"
-          rows={4}
-        />
-      </div>
-
-      <div>
-        <label className="text-sm">Extra fee (optional)</label>
-        <input
-          type="number"
-          value={customFee}
-          onChange={(e) => setCustomFee(e.target.value)}
-          className="block mt-1 rounded border p-2 w-full"
-        />
-      </div>
-
-      <div className="flex items-center justify-between">
-        <div className="text-sm text-gray-600">Estimated price</div>
-        <div className="text-lg font-semibold text-pink-600">{fmt(price)}</div>
-      </div>
-
-      <div className="flex gap-2">
-        <button type="submit" className="flex-1 bg-pink-600 text-white rounded p-2">
-          Add commission to cart
-        </button>
-
-        <button
-          type="button"
-          onClick={() => {
-            setNotes("");
-            setCustomFee(0);
-          }}
-          className="flex-1 border rounded p-2"
-        >
-          Reset
-        </button>
-      </div>
-    </form>
-  );
-}
-
-function ContactForm({ onSend }) {
-  const [sending, setSending] = useState(false);
-
-  return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        const data = {
-          name: e.target.name.value,
-          email: e.target.email.value,
-          message: e.target.message.value,
-        };
-
-        setSending(true);
-        setTimeout(() => {
-          setSending(false);
-          onSend(data);
-          e.target.reset();
-        }, 700);
-      }}
-      className="mt-4 space-y-3"
-    >
-      <input name="name" placeholder="Your name" className="block w-full rounded border p-2" required />
-      <input name="mobile" placeholder="Mobile number" className="block w-full rounded border p-2" required />
-      <input name="email" type="email" placeholder="Email" className="block w-full rounded border p-2" required />
-      <textarea name="message" placeholder="Message" className="block w-full rounded border p-2" rows={4} required />
-
-      <div className="flex gap-2">
-        <button type="submit" className="px-4 py-2 rounded bg-pink-600 text-white">
-          {sending ? "Sending..." : "Send message"}
-        </button>
-
-        <button type="reset" className="px-4 py-2 rounded border">
-          Clear
-        </button>
-      </div>
-    </form>
-  );
-}
-
-function CheckoutForm({ onCheckout, total }) {
-  const [loading, setLoading] = useState(false);
-
-  return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        setLoading(true);
-
-        const details = {
-          name: e.target.name.value,
-          email: e.target.email.value,
-          address: e.target.address.value,
-          total,
-        };
-
-        setTimeout(() => {
-          setLoading(false);
-          onCheckout(details);
-        }, 900);
-      }}
-      className="space-y-2"
-    >
-      <input name="name" placeholder="Full name" className="block w-full rounded border p-2" required />
-      <input name="email" type="email" placeholder="Email" className="block w-full rounded border p-2" required />
-      <input name="address" placeholder="Shipping address" className="block w-full rounded border p-2" required />
-
-      <div className="flex items-center justify-between">
-        <div className="text-sm">Pay securely</div>
-        <div className="font-semibold">${total.toFixed(2)}</div>
-      </div>
-
-      <button type="submit" disabled={loading} className="w-full bg-pink-600 text-white rounded p-2">
-        {loading ? "Processing..." : "Place order"}
-      </button>
-    </form>
-  );
-}
-
-
-
-// --- Mount to DOM (for quick local testing) ---
+// --- Mount to DOM (auto-added) ---
 import { createRoot } from "react-dom/client";
 const rootEl = document.getElementById("root") || document.body.appendChild(document.createElement("div"));
 rootEl.id = "root";
-createRoot(rootEl).render(<App />);
+try {
+  createRoot(rootEl).render(<App />);
+} catch (e) {
+  const Default = (typeof App !== 'undefined') ? App : (module && module.exports ? module.exports.default : null);
+  if (Default) createRoot(rootEl).render(React.createElement(Default));
+}
