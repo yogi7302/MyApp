@@ -391,7 +391,7 @@ export default function App() {
           </div>
         </section>
 
-        {/* GALLERY - replaced grid with Carousel */}
+        {/* GALLERY - Carousel with reduced gap spacing */}
         <section id="gallery" className="mb-12">
           <h3 className="text-2xl font-semibold mb-4">Gallery</h3>
 
@@ -525,11 +525,7 @@ export default function App() {
           />
         </section>
 
-        {/* CONTACT & ABOUT
-            About the Artist heading slightly smaller/thinner,
-            artist image slightly smaller,
-            Contact & Social arranged in neat grid.
-        */}
+        {/* CONTACT & ABOUT */}
         <section id="contact" className="mb-16 grid md:grid-cols-2 gap-6">
           <div className="bg-white p-6 rounded-lg shadow-sm">
             <h3 className="text-2xl font-semibold mb-2">Contact</h3>
@@ -540,13 +536,11 @@ export default function App() {
             <ContactForm onSend={(d) => alert("Message sent: " + JSON.stringify(d))} />
           </div>
 
-          {/* Right column: About the Artist redesigned as requested */}
+          {/* Right column: About the Artist */}
           <div className="bg-white p-6 rounded-2xl shadow-lg">
             <div className="flex flex-col gap-4 items-center text-center">
-              {/* Heading slightly smaller and thinner */}
               <h4 className="text-2xl md:text-3xl font-semibold leading-tight">About the Artist</h4>
 
-              {/* Artist image slightly smaller than before */}
               <div className="w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden shadow-md border border-pink-50">
                 <img
                   src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=400&q=80"
@@ -555,16 +549,13 @@ export default function App() {
                 />
               </div>
 
-              {/* Single-line bio placed directly under the artist image */}
               <div className="text-sm text-gray-600 max-w-xl">
                 <p>Creating calming digital prints inspired by subtle color and texture.</p>
               </div>
 
-              {/* Contact & Social clickable links styled and arranged neatly */}
               <div className="pt-3 border-t border-gray-100 w-full mt-2">
                 <h5 className="text-sm font-medium text-gray-700 mb-3 text-left">Contact & Social</h5>
 
-                {/* Use a grid so items align uniformly and look neat */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <a
                     href="mailto:hello@digitalartist.com"
@@ -630,12 +621,7 @@ export default function App() {
           </div>
         </section>
 
-        {/* ABOUT / NEWSLETTER
-            Updated per request:
-            - Make the newsletter box fit the site width (no narrow fixed max)
-            - Left-align details inside the newsletter box
-            - Left-align form items on larger screens (keeps responsive)
-        */}
+        {/* NEWSLETTER */}
         <section id="about" className="mb-12">
           <div className="bg-white p-8 rounded-lg shadow-sm w-full mx-auto">
             <h3 className="text-2xl font-semibold mb-3 text-left">Newsletter</h3>
@@ -786,18 +772,9 @@ export default function App() {
   );
 }
 
-/* ======================================================================
-   GENERIC CAROUSEL COMPONENT (simple, responsive)
-   - props:
-     items: array of items
-     itemRenderer: function(item) => ReactNode
-     perPage: { base: number, sm?: number, md?: number, lg?: number }
-   ====================================================================== */
-
-function Carousel({ items = [], itemRenderer, perPage = { base: 1 } }) {
+function Carousel({ items = [], itemRenderer, perPage = { base: 1, sm: 2, md: 3 } }) {
   const [index, setIndex] = useState(0);
 
-  // responsive per-page selection using window width (simple)
   const getPerPage = () => {
     if (typeof window === "undefined") return perPage.base || 1;
     const w = window.innerWidth;
@@ -816,24 +793,26 @@ function Carousel({ items = [], itemRenderer, perPage = { base: 1 } }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const maxIndex = Math.max(0, items.length - visible);
+  const maxIndex = Math.max(0, Math.ceil(items.length / visible) - 1);
 
   useEffect(() => {
-    // ensure index is within bounds when visible changes
     if (index > maxIndex) setIndex(maxIndex);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [visible, items.length]);
+  }, [visible, items.length, maxIndex]);
 
-  const prev = () => setIndex((i) => Math.max(0, i - visible));
-  const next = () => setIndex((i) => Math.min(maxIndex, i + visible));
+  const prev = () => setIndex((i) => Math.max(0, i - 1));
+  const next = () => setIndex((i) => Math.min(maxIndex, i + 1));
 
   if (!items || items.length === 0) {
     return <div className="text-sm text-gray-500">No items</div>;
   }
 
+  const startIdx = index * visible;
+  const endIdx = Math.min(startIdx + visible, items.length);
+  const visibleItems = items.slice(startIdx, endIdx);
+
   return (
     <div className="relative">
-      {/* Controls */}
       <div className="flex items-center justify-between mb-3">
         <div className="text-sm text-gray-600">{items.length} items</div>
 
@@ -857,23 +836,16 @@ function Carousel({ items = [], itemRenderer, perPage = { base: 1 } }) {
         </div>
       </div>
 
-      {/* Track */}
-      <div className="overflow-hidden">
-        <div
-          className="flex gap-4 transition-transform duration-300"
-          style={{ transform: `translateX(-${(index / items.length) * 100}%)`, width: `${(items.length / visible) * 100}%` }}
-        >
-          {items.map((it, i) => (
-            <div key={i} style={{ flex: `0 0 ${100 / items.length}%` }} className="px-1">
-              <div className="w-full h-full">{itemRenderer(it)}</div>
-            </div>
-          ))}
-        </div>
+      <div className="grid gap-2 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
+        {visibleItems.map((it, i) => (
+          <div key={startIdx + i} className="w-full">
+            {itemRenderer(it)}
+          </div>
+        ))}
       </div>
 
-      {/* Dots */}
       <div className="flex gap-2 justify-center mt-3">
-        {Array.from({ length: maxIndex + 1 }).map((_, i) => (
+        {Array.from({ length: Math.max(1, maxIndex + 1) }).map((_, i) => (
           <button
             key={i}
             onClick={() => setIndex(i)}
@@ -885,10 +857,6 @@ function Carousel({ items = [], itemRenderer, perPage = { base: 1 } }) {
     </div>
   );
 }
-
-/* ======================================================================
-   INDIVIDUAL COMPONENTS (unchanged)
-   ====================================================================== */
 
 function ArtModal({ art, onClose, sizes, frames, calculatePrice, onAdd, fmt }) {
   const [sizeId, setSizeId] = useState(sizes[0].id);
@@ -922,7 +890,6 @@ function ArtModal({ art, onClose, sizes, frames, calculatePrice, onAdd, fmt }) {
             </div>
 
             <div className="mt-4 space-y-3">
-              {/* Size */}
               <div>
                 <label className="text-sm">Size</label>
                 <select
@@ -938,7 +905,6 @@ function ArtModal({ art, onClose, sizes, frames, calculatePrice, onAdd, fmt }) {
                 </select>
               </div>
 
-              {/* Frame */}
               <div>
                 <label className="text-sm">Frame</label>
                 <select
@@ -954,7 +920,6 @@ function ArtModal({ art, onClose, sizes, frames, calculatePrice, onAdd, fmt }) {
                 </select>
               </div>
 
-              {/* Fee */}
               <div>
                 <label className="text-sm">Customization fee (optional)</label>
                 <input
@@ -1193,3 +1158,11 @@ function CheckoutForm({ onCheckout, total }) {
     </form>
   );
 }
+
+
+
+// --- Mount to DOM (for quick local testing) ---
+import { createRoot } from "react-dom/client";
+const rootEl = document.getElementById("root") || document.body.appendChild(document.createElement("div"));
+rootEl.id = "root";
+createRoot(rootEl).render(<App />);
