@@ -274,7 +274,7 @@ export default function App() {
             <a href="#gallery" className="text-sm hover:underline">Gallery</a>
             <a href="#sold" className="text-sm hover:underline">Sold</a>
             <a href="#custom" className="text-sm hover:underline">Custom</a>
-            <a href="#about" className="text-sm hover:underline">About</a>
+            <a href="#about" className="text-sm hover:underline">Newsletter</a>
             <a href="#contact" className="text-sm hover:underline">Contact</a>
           </nav>
 
