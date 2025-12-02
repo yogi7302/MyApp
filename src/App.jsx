@@ -810,6 +810,7 @@ function Carousel({ items = [], itemRenderer, perPage = { base: 1, sm: 2, md: 3 
   const startIdx = index * visible;
   const endIdx = Math.min(startIdx + visible, items.length);
   const visibleItems = items.slice(startIdx, endIdx);
+  const columnCount = Math.max(1, visibleItems.length);
 
   return (
     <div className="relative">
@@ -836,7 +837,10 @@ function Carousel({ items = [], itemRenderer, perPage = { base: 1, sm: 2, md: 3 
         </div>
       </div>
 
-      <div className="grid gap-2 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
+      <div
+        className="grid gap-2"
+        style={{ gridTemplateColumns: `repeat(${columnCount}, minmax(0, 1fr))` }}
+      >
         {visibleItems.map((it, i) => (
           <div key={startIdx + i} className="w-full">
             {itemRenderer(it)}
@@ -1158,8 +1162,6 @@ function CheckoutForm({ onCheckout, total }) {
     </form>
   );
 }
-
-
 
 // --- Mount to DOM (for quick local testing) ---
 import { createRoot } from "react-dom/client";
