@@ -499,30 +499,34 @@ export default function App() {
           </div>
         </section>
 
-        {/* TESTIMONIALS - carousel of testimonials (shows 2 per view on md) */}
+        {/* TESTIMONIALS - cleaned layout */}
         <section className="mb-12">
           <h3 className="text-2xl font-semibold mb-4">Testimonials</h3>
 
-          <Carousel
-            items={testimonials}
-            itemRenderer={(t) => (
-              <div key={t.id} className="bg-white p-4 rounded-lg shadow-sm max-w-md mx-auto">
+          <div className="grid gap-4 md:grid-cols-2">
+            {testimonials.map((t) => (
+              <div
+                key={t.id}
+                className="bg-white rounded-xl shadow-sm p-5 border border-gray-100 max-w-full"
+              >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-full bg-pink-100 flex items-center justify-center text-pink-600 font-bold text-lg">
                     {t.name[0]}
                   </div>
 
-                  <div>
+                  <div className="flex flex-col gap-1">
                     <div className="font-semibold">{t.name}</div>
-                    <div className="text-xs text-gray-500">{"★".repeat(t.rating)}</div>
+                    <div className="text-xs text-gray-500 tracking-wide">
+                      {"★".repeat(t.rating)}{" "}
+                      <span className="text-gray-400">{"★".repeat(5 - t.rating)}</span>
+                    </div>
                   </div>
                 </div>
 
-                <p className="mt-3 text-sm text-gray-600">{t.text}</p>
+                <p className="mt-3 text-sm leading-relaxed text-gray-600">{t.text}</p>
               </div>
-            )}
-            perPage={{ base: 1, md: 2 }}
-          />
+            ))}
+          </div>
         </section>
 
         {/* CONTACT & ABOUT */}
@@ -1168,4 +1172,3 @@ import { createRoot } from "react-dom/client";
 const rootEl = document.getElementById("root") || document.body.appendChild(document.createElement("div"));
 rootEl.id = "root";
 createRoot(rootEl).render(<App />);
-
