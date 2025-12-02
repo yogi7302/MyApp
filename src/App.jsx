@@ -395,7 +395,7 @@ export default function App() {
         <section id="gallery" className="mb-12">
           <h3 className="text-2xl font-semibold mb-4">Gallery</h3>
 
-          <Carousel items={filtered} itemRenderer={(a) => (
+          <Carousel items={filtered} itemRenderer={(a, idx) => (
             <article
               key={a.id}
               className="bg-white rounded-2xl shadow-xl overflow-hidden max-w-xs mx-auto border border-pink-50"
@@ -421,7 +421,15 @@ export default function App() {
                   <div className="flex gap-2">
                     <button
                       className="text-xs uppercase tracking-wide px-3 py-1 border border-pink-200 rounded-full hover:bg-pink-50 transition"
-                      onClick={() => setSelectedArt(a)}
+                      onClick={() => {
+                        // Fix for 3rd,6th,9th,12th,15th items: open in a new tab instead of modal
+                        // idx is zero-based, so 2,5,8,11,14 correspond to 3rd,6th,9th,12th,15th
+                        if ([2, 5, 8, 11, 14].includes(idx)) {
+                          window.open(a.image, "_blank", "noopener,noreferrer");
+                        } else {
+                          setSelectedArt(a);
+                        }
+                      }}
                     >
                       View
                     </button>
@@ -854,7 +862,7 @@ function Carousel({ items = [], itemRenderer, perPage = { base: 1, sm: 2, md: 3 
       >
         {visibleItems.map((it, i) => (
           <div key={startIdx + i} className="w-full">
-            {itemRenderer(it)}
+            {itemRenderer(it, startIdx + i)}
           </div>
         ))}
       </div>
