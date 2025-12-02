@@ -391,38 +391,46 @@ export default function App() {
           </div>
         </section>
 
-        {/* GALLERY - Carousel with reduced gap spacing */}
+        {/* GALLERY - Carousel with refined view modal */}
         <section id="gallery" className="mb-12">
           <h3 className="text-2xl font-semibold mb-4">Gallery</h3>
 
           <Carousel items={filtered} itemRenderer={(a) => (
             <article
               key={a.id}
-              className="bg-white rounded-lg shadow-sm overflow-hidden max-w-xs mx-auto"
+              className="bg-white rounded-2xl shadow-xl overflow-hidden max-w-xs mx-auto border border-pink-50"
             >
               <div className="relative">
-                <img src={a.image} alt={a.title} className="w-full h-56 object-cover" />
+                <img src={a.image} alt={a.title} className="w-full h-56 object-cover transition duration-300 hover:scale-105" />
                 {a.sold && (
-                  <span className="absolute top-3 left-3 bg-gray-800 text-white px-2 py-1 rounded text-xs">
+                  <span className="absolute top-3 left-3 bg-gray-900 text-white px-3 py-1 rounded-full text-xs tracking-wide">
                     SOLD
                   </span>
                 )}
               </div>
 
-              <div className="p-4">
-                <h4 className="font-semibold">{a.title}</h4>
-                <p className="text-sm text-gray-500 mt-1">{a.description}</p>
+              <div className="p-5 space-y-3">
+                <div>
+                  <h4 className="font-semibold text-lg">{a.title}</h4>
+                  <p className="text-sm text-gray-500 mt-1 leading-tight">{a.description}</p>
+                </div>
 
-                <div className="mt-3 flex items-center justify-between">
-                  <div className="text-pink-600 font-medium">{fmt(a.priceBase)}</div>
+                <div className="flex items-center justify-between">
+                  <div className="text-pink-600 font-semibold text-lg">{fmt(a.priceBase)}</div>
 
                   <div className="flex gap-2">
-                    <button className="text-sm px-3 py-1 border rounded" onClick={() => setSelectedArt(a)}>
+                    <button
+                      className="text-xs uppercase tracking-wide px-3 py-1 border border-pink-200 rounded-full hover:bg-pink-50 transition"
+                      onClick={() => setSelectedArt(a)}
+                    >
                       View
                     </button>
 
                     {!a.sold && (
-                      <button className="text-sm px-3 py-1 rounded bg-pink-600 text-white" onClick={() => setSelectedArt(a)}>
+                      <button
+                        className="text-xs uppercase tracking-wide px-3 py-1 rounded-full bg-pink-600 text-white shadow hover:shadow-md transition"
+                        onClick={() => setSelectedArt(a)}
+                      >
                         Buy
                       </button>
                     )}
@@ -877,28 +885,30 @@ function ArtModal({ art, onClose, sizes, frames, calculatePrice, onAdd, fmt }) {
   });
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg max-w-3xl w-full overflow-auto">
-        <div className="flex items-start gap-4">
-          <img
-            src={art.image}
-            alt={art.title}
-            className="w-1/2 object-cover h-72 rounded-l"
-          />
+    <div className="fixed inset-0 bg-gradient-to-br from-black/70 via-transparent to-black/40 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full overflow-hidden border border-pink-100">
+        <div className="cursor-pointer text-gray-400 text-lg font-bold text-right p-4" onClick={onClose}>
+          ✕
+        </div>
+        <div className="flex flex-col md:flex-row">
+          <div className="relative md:w-1/2 w-full">
+            <div className="absolute inset-4 rounded-3xl bg-gradient-to-br from-pink-100/70 via-transparent to-pink-100/20 pointer-events-none" />
+            <img
+              src={art.image}
+              alt={art.title}
+              className="relative z-10 w-full h-96 object-cover rounded-3xl md:rounded-none md:rounded-l-3xl shadow-inner"
+            />
+          </div>
 
-          <div className="p-4 flex-1">
-            <div className="flex items-start justify-between">
-              <div>
-                <h4 className="text-xl font-semibold">{art.title}</h4>
-                <p className="text-sm text-gray-500 mt-1">{art.description}</p>
-              </div>
-
-              <button onClick={onClose} className="text-gray-400">✕</button>
+          <div className="md:w-1/2 w-full p-6 space-y-4">
+            <div>
+              <h4 className="text-2xl font-semibold">{art.title}</h4>
+              <p className="text-sm text-gray-500 mt-1">{art.description}</p>
             </div>
 
-            <div className="mt-4 space-y-3">
+            <div className="space-y-3">
               <div>
-                <label className="text-sm">Size</label>
+                <label className="text-sm font-medium text-gray-600">Size</label>
                 <select
                   value={sizeId}
                   onChange={(e) => setSizeId(e.target.value)}
@@ -913,7 +923,7 @@ function ArtModal({ art, onClose, sizes, frames, calculatePrice, onAdd, fmt }) {
               </div>
 
               <div>
-                <label className="text-sm">Frame</label>
+                <label className="text-sm font-medium text-gray-600">Frame</label>
                 <select
                   value={frameId}
                   onChange={(e) => setFrameId(e.target.value)}
@@ -928,7 +938,7 @@ function ArtModal({ art, onClose, sizes, frames, calculatePrice, onAdd, fmt }) {
               </div>
 
               <div>
-                <label className="text-sm">Customization fee (optional)</label>
+                <label className="text-sm font-medium text-gray-600">Customization fee (optional)</label>
                 <input
                   type="number"
                   min="0"
@@ -937,38 +947,38 @@ function ArtModal({ art, onClose, sizes, frames, calculatePrice, onAdd, fmt }) {
                   className="block mt-1 rounded border p-2 w-full"
                 />
               </div>
+            </div>
 
-              <div className="flex items-center justify-between">
-                <div className="text-sm text-gray-600">Price preview</div>
-                <div className="text-lg font-semibold text-pink-600">
-                  {fmt(price)}
-                </div>
+            <div className="flex items-center justify-between">
+              <div className="text-sm text-gray-600">Price preview</div>
+              <div className="text-2xl font-bold text-pink-600">
+                {fmt(price)}
               </div>
+            </div>
 
-              <div className="flex gap-2">
-                <button
-                  onClick={() =>
-                    onAdd({
-                      artId: art.id,
-                      image: art.image,
-                      title: art.title,
-                      sizeId,
-                      sizeLabel: sizes.find((s) => s.id === sizeId).label,
-                      frameId,
-                      frameLabel: frames.find((f) => f.id === frameId).label,
-                      customization: Number(customFee),
-                      price,
-                    })
-                  }
-                  className="flex-1 bg-pink-600 text-white rounded p-2"
-                >
-                  Add to cart
-                </button>
+            <div className="flex gap-2">
+              <button
+                onClick={() =>
+                  onAdd({
+                    artId: art.id,
+                    image: art.image,
+                    title: art.title,
+                    sizeId,
+                    sizeLabel: sizes.find((s) => s.id === sizeId).label,
+                    frameId,
+                    frameLabel: frames.find((f) => f.id === frameId).label,
+                    customization: Number(customFee),
+                    price,
+                  })
+                }
+                className="flex-1 bg-pink-600 text-white rounded-2xl py-3 font-semibold shadow-lg"
+              >
+                Add to cart
+              </button>
 
-                <button onClick={onClose} className="flex-1 border rounded p-2">
-                  Cancel
-                </button>
-              </div>
+              <button onClick={onClose} className="flex-1 border rounded-2xl py-3 font-semibold">
+                Cancel
+              </button>
             </div>
           </div>
         </div>
