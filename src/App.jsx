@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 
 export default function App() {
-  // ------------------ Artwork Data (expanded with 6 more items; several marked sold) ------------------
   const initialArtworks = [
     {
       id: "a1",
@@ -44,8 +43,6 @@ export default function App() {
       description: "Example of a customizable portrait.",
       customizable: true,
     },
-
-    // Existing added artworks
     {
       id: "a5",
       title: "Pastel Harbor",
@@ -106,8 +103,6 @@ export default function App() {
       sold: false,
       description: "Pastel floral arrangement.",
     },
-
-    // NEW sold artworks (6 additional items requested)
     {
       id: "a11",
       title: "Crimson Dunes",
@@ -182,7 +177,6 @@ export default function App() {
     { id: "gold", label: "Gold frame", price: 45 },
   ];
 
-  // ------------------ State ------------------
   const [artworks] = useState(initialArtworks);
   const [query, setQuery] = useState("");
   const [filterTag, setFilterTag] = useState("all");
@@ -199,7 +193,6 @@ export default function App() {
   const [selectedArt, setSelectedArt] = useState(null);
   const [checkoutView, setCheckoutView] = useState(false);
 
-  // ------------------ Testimonials (expanded to 8) ------------------
   const [testimonials] = useState([
     { id: 1, name: "Rina K.", text: "Absolutely lovely — the colors and details are perfect.", rating: 5 },
     { id: 2, name: "Marco P.", text: "Quick response and a beautiful framed print arrived safe.", rating: 5 },
@@ -211,12 +204,10 @@ export default function App() {
     { id: 8, name: "Luca B.", text: "Beautiful framing and packaging.", rating: 4 },
   ]);
 
-  // Save cart to local storage
   useEffect(() => {
     localStorage.setItem("cart_v1", JSON.stringify(cart));
   }, [cart]);
 
-  // ------------------ Utility Functions ------------------
   const calculatePrice = (base, { sizeId = "s", frameId = "none", customization = 0 } = {}) => {
     const size = sizes.find((s) => s.id === sizeId) || sizes[0];
     const frame = frames.find((f) => f.id === frameId) || frames[0];
@@ -254,10 +245,8 @@ export default function App() {
     alert("Order placed (demo)");
   };
 
-  // ------------------ UI ------------------
   return (
     <div className="min-h-screen bg-gradient-to-tr from-pink-50 via-white to-pink-25 text-gray-800">
-      {/* HEADER */}
       <header className="sticky top-0 bg-white/70 backdrop-blur z-30">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -288,7 +277,6 @@ export default function App() {
               />
             </div>
 
-            {/* CART BUTTON */}
             <button
               className="relative"
               onClick={() => setCheckoutView((s) => !s)}
@@ -319,10 +307,7 @@ export default function App() {
         </div>
       </header>
 
-      {/* MAIN CONTENT */}
       <main className="max-w-6xl mx-auto px-4 py-8">
-
-        {/* HERO */}
         <section className="mb-8 grid md:grid-cols-2 gap-6 items-center">
           <div>
             <h2 className="text-3xl md:text-4xl font-extrabold">
@@ -350,7 +335,6 @@ export default function App() {
           </div>
         </section>
 
-        {/* FILTERS */}
         <section className="mb-6 flex flex-col md:flex-row gap-3 items-center justify-between">
           <div className="flex gap-2 items-center">
             <label className="text-sm">Filter:</label>
@@ -391,7 +375,6 @@ export default function App() {
           </div>
         </section>
 
-        {/* GALLERY - Carousel with refined view modal */}
         <section id="gallery" className="mb-12">
           <h3 className="text-2xl font-semibold mb-4">Gallery</h3>
 
@@ -439,10 +422,8 @@ export default function App() {
               </div>
             </article>
           )} perPage={{ base: 1, sm: 2, md: 3 }} />
-
         </section>
 
-        {/* SOLD ITEMS - carousel with the additional 6 sold artworks */}
         <section id="sold" className="mb-12">
           <h3 className="text-2xl font-semibold mb-4">Sold Artworks</h3>
 
@@ -464,12 +445,10 @@ export default function App() {
           />
         </section>
 
-        {/* CUSTOM COMMISSIONS */}
         <section id="custom" className="mb-12">
           <h3 className="text-2xl font-semibold mb-4">Custom & Commissioned Artworks</h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-            {/* FORM */}
             <div className="bg-white p-6 rounded-lg shadow-sm">
               <h4 className="font-semibold">Commission a custom piece</h4>
               <p className="mt-2 text-sm text-gray-500">
@@ -486,7 +465,6 @@ export default function App() {
               />
             </div>
 
-            {/* SIDE INFO */}
             <div className="space-y-4">
               <div className="bg-white p-4 rounded-lg shadow-sm">
                 <h5 className="font-semibold">Why commission?</h5>
@@ -507,7 +485,6 @@ export default function App() {
           </div>
         </section>
 
-        {/* TESTIMONIALS - carousel of testimonials (shows 2 per view on md) */}
         <section className="mb-12">
           <h3 className="text-2xl font-semibold mb-4">Testimonials</h3>
 
@@ -536,7 +513,6 @@ export default function App() {
           />
         </section>
 
-        {/* CONTACT & ABOUT */}
         <section id="contact" className="mb-16 grid md:grid-cols-2 gap-6">
           <div className="bg-white p-6 rounded-lg shadow-sm">
             <h3 className="text-2xl font-semibold mb-2">Contact</h3>
@@ -547,7 +523,6 @@ export default function App() {
             <ContactForm onSend={(d) => alert("Message sent: " + JSON.stringify(d))} />
           </div>
 
-          {/* Right column: About the Artist */}
           <div className="bg-white p-6 rounded-2xl shadow-lg">
             <div className="flex flex-col gap-4 items-center text-center">
               <h4 className="text-2xl md:text-3xl font-semibold leading-tight">About the Artist</h4>
@@ -632,7 +607,6 @@ export default function App() {
           </div>
         </section>
 
-        {/* NEWSLETTER */}
         <section id="about" className="mb-12">
           <div className="bg-white p-8 rounded-lg shadow-sm w-full mx-auto">
             <h3 className="text-2xl font-semibold mb-3 text-left">Newsletter</h3>
@@ -677,7 +651,6 @@ export default function App() {
         © {new Date().getFullYear()} Digital Artist — Built with care.
       </footer>
 
-      {/* ================= CART / CHECKOUT DRAWER ================= */}
       <div
         className={`fixed right-4 bottom-4 md:bottom-8 md:right-8 w-full md:w-96 transition-all ${
           checkoutView ? "translate-y-0" : "translate-y-10 opacity-0"
@@ -764,7 +737,6 @@ export default function App() {
         </div>
       </div>
 
-      {/* ART MODAL */}
       {selectedArt && (
         <ArtModal
           art={selectedArt}
@@ -801,14 +773,12 @@ function Carousel({ items = [], itemRenderer, perPage = { base: 1, sm: 2, md: 3 
     const onResize = () => setVisible(getPerPage());
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const maxIndex = Math.max(0, Math.ceil(items.length / visible) - 1);
 
   useEffect(() => {
     if (index > maxIndex) setIndex(maxIndex);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible, items.length, maxIndex]);
 
   const prev = () => setIndex((i) => Math.max(0, i - 1));
@@ -885,34 +855,34 @@ function ArtModal({ art, onClose, sizes, frames, calculatePrice, onAdd, fmt }) {
   });
 
   return (
-    <div className="fixed inset-0 bg-gradient-to-br from-black/70 via-transparent to-black/40 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full overflow-hidden border border-pink-100">
-        <div className="cursor-pointer text-gray-400 text-lg font-bold text-right p-4" onClick={onClose}>
+    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-3xl shadow-2xl max-w-3xl w-full overflow-hidden border border-pink-100">
+        <div className="cursor-pointer text-gray-400 text-lg font-bold text-right p-3" onClick={onClose}>
           ✕
         </div>
-        <div className="flex flex-col md:flex-row">
-          <div className="relative md:w-1/2 w-full">
-            <div className="absolute inset-4 rounded-3xl bg-gradient-to-br from-pink-100/70 via-transparent to-pink-100/20 pointer-events-none" />
+        <div className="flex flex-col lg:flex-row">
+          <div className="relative lg:w-1/2 w-full">
+            <div className="absolute inset-3 rounded-3xl bg-gradient-to-br from-pink-100/70 via-transparent to-pink-100/20 pointer-events-none" />
             <img
               src={art.image}
               alt={art.title}
-              className="relative z-10 w-full h-96 object-cover rounded-3xl md:rounded-none md:rounded-l-3xl shadow-inner"
+              className="relative z-10 w-full h-64 object-cover rounded-3xl lg:rounded-none lg:rounded-l-3xl shadow-inner"
             />
           </div>
 
-          <div className="md:w-1/2 w-full p-6 space-y-4">
+          <div className="lg:w-1/2 w-full p-5 space-y-4 text-sm">
             <div>
-              <h4 className="text-2xl font-semibold">{art.title}</h4>
+              <h4 className="text-xl font-semibold">{art.title}</h4>
               <p className="text-sm text-gray-500 mt-1">{art.description}</p>
             </div>
 
             <div className="space-y-3">
               <div>
-                <label className="text-sm font-medium text-gray-600">Size</label>
+                <label className="text-xs font-medium text-gray-600">Size</label>
                 <select
                   value={sizeId}
                   onChange={(e) => setSizeId(e.target.value)}
-                  className="block mt-1 rounded border p-2 w-full"
+                  className="block mt-1 rounded border p-2 w-full text-sm"
                 >
                   {sizes.map((s) => (
                     <option key={s.id} value={s.id}>
@@ -923,11 +893,11 @@ function ArtModal({ art, onClose, sizes, frames, calculatePrice, onAdd, fmt }) {
               </div>
 
               <div>
-                <label className="text-sm font-medium text-gray-600">Frame</label>
+                <label className="text-xs font-medium text-gray-600">Frame</label>
                 <select
                   value={frameId}
                   onChange={(e) => setFrameId(e.target.value)}
-                  className="block mt-1 rounded border p-2 w-full"
+                  className="block mt-1 rounded border p-2 w-full text-sm"
                 >
                   {frames.map((f) => (
                     <option key={f.id} value={f.id}>
@@ -938,19 +908,19 @@ function ArtModal({ art, onClose, sizes, frames, calculatePrice, onAdd, fmt }) {
               </div>
 
               <div>
-                <label className="text-sm font-medium text-gray-600">Customization fee (optional)</label>
+                <label className="text-xs font-medium text-gray-600">Customization fee (optional)</label>
                 <input
                   type="number"
                   min="0"
                   value={customFee}
                   onChange={(e) => setCustomFee(e.target.value)}
-                  className="block mt-1 rounded border p-2 w-full"
+                  className="block mt-1 rounded border p-2 w-full text-sm"
                 />
               </div>
             </div>
 
-            <div className="flex items-center justify-between">
-              <div className="text-sm text-gray-600">Price preview</div>
+            <div className="flex items-center justify-between text-xs text-gray-600">
+              <div>Price preview</div>
               <div className="text-2xl font-bold text-pink-600">
                 {fmt(price)}
               </div>
@@ -971,12 +941,12 @@ function ArtModal({ art, onClose, sizes, frames, calculatePrice, onAdd, fmt }) {
                     price,
                   })
                 }
-                className="flex-1 bg-pink-600 text-white rounded-2xl py-3 font-semibold shadow-lg"
+                className="flex-1 bg-pink-600 text-white rounded-2xl py-3 font-semibold shadow-lg text-sm"
               >
                 Add to cart
               </button>
 
-              <button onClick={onClose} className="flex-1 border rounded-2xl py-3 font-semibold">
+              <button onClick={onClose} className="flex-1 border rounded-2xl py-3 font-semibold text-sm">
                 Cancel
               </button>
             </div>
@@ -1176,7 +1146,6 @@ function CheckoutForm({ onCheckout, total }) {
   );
 }
 
-// --- Mount to DOM (for quick local testing) ---
 import { createRoot } from "react-dom/client";
 const rootEl = document.getElementById("root") || document.body.appendChild(document.createElement("div"));
 rootEl.id = "root";
