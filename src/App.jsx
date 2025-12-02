@@ -506,19 +506,19 @@ export default function App() {
           <Carousel
             items={testimonials}
             itemRenderer={(t) => (
-              <div key={t.id} className="bg-white p-4 rounded-lg shadow-sm max-w-md mx-auto">
+              <div key={t.id} className="bg-white p-6 rounded-lg shadow-sm w-full mx-auto" style={{ minHeight: "170px" }}>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center">
+                  <div className="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center text-lg font-semibold">
                     {t.name[0]}
                   </div>
 
                   <div>
-                    <div className="font-semibold">{t.name}</div>
-                    <div className="text-xs text-gray-500">{"★".repeat(t.rating)}</div>
+                    <div className="font-semibold text-lg">{t.name}</div>
+                    <div className="text-sm text-gray-500">{"★".repeat(t.rating)}</div>
                   </div>
                 </div>
 
-                <p className="mt-3 text-sm text-gray-600">{t.text}</p>
+                <p className="mt-4 text-base text-gray-600">{t.text}</p>
               </div>
             )}
             perPage={{ base: 1, md: 2 }}
@@ -1168,4 +1168,3 @@ import { createRoot } from "react-dom/client";
 const rootEl = document.getElementById("root") || document.body.appendChild(document.createElement("div"));
 rootEl.id = "root";
 createRoot(rootEl).render(<App />);
-
