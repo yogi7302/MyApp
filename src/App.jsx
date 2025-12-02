@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useMemo } from "react";
 
 export default function App() {
@@ -506,7 +507,10 @@ export default function App() {
           <Carousel
             items={testimonials}
             itemRenderer={(t) => (
-              <div key={t.id} className="bg-white p-6 rounded-lg shadow-sm w-full mx-auto" style={{ minHeight: "170px" }}>
+              <div
+                key={t.id}
+                className="bg-white rounded-lg shadow-sm w-full mx-auto p-5 flex flex-col gap-4"
+              >
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center text-lg font-semibold">
                     {t.name[0]}
@@ -514,11 +518,11 @@ export default function App() {
 
                   <div>
                     <div className="font-semibold text-lg">{t.name}</div>
-                    <div className="text-sm text-gray-500">{"★".repeat(t.rating)}</div>
+                    <div className="text-xs tracking-wider text-gray-400">{"★".repeat(t.rating)}</div>
                   </div>
                 </div>
 
-                <p className="mt-4 text-base text-gray-600">{t.text}</p>
+                <p className="text-sm text-gray-600 line-clamp-3">{t.text}</p>
               </div>
             )}
             perPage={{ base: 1, md: 2 }}
