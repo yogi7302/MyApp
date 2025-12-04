@@ -241,7 +241,7 @@ export default function App() {
     });
   }, [artworks, onlyAvailable, filterTag, query]);
 
-  // Popup state and function for modern, centered message box
+  // Popup state and function for modern, centered message box with blur
   const [popup, setPopup] = useState({ show: false, message: "" });
 
   const showPopup = (message) => {
@@ -252,13 +252,11 @@ export default function App() {
   // Custom form reset key for clearing form after adding to cart and order placed
   const [customFormResetKey, setCustomFormResetKey] = useState(Date.now());
 
-  // Add to cart wrapper for CustomForm to reset form after add
   const handleCustomAddToCart = (item) => {
     addToCart(item);
-    setCustomFormResetKey(Date.now());
+    setCustomFormResetKey(Date.now()); // Reset form on add
   };
 
-  // Checkout handler with popup and cart clear, also resets custom form on success
   const handleCheckout = async (details) => {
     try {
       const response = await axios.post(`${API_BASE_URL}/api/order`, {
@@ -282,7 +280,6 @@ export default function App() {
     }
   };
 
-  // Send message handler with popup
   const handleSendMessage = async (data) => {
     try {
       const response = await axios.post(`${API_BASE_URL}/api/contact`, {
@@ -301,7 +298,6 @@ export default function App() {
     }
   };
 
-  // Subscribe handler with popup
   const handleSubscribe = async (email) => {
     try {
       const response = await axios.post(`${API_BASE_URL}/api/newsletter`, { email });
@@ -317,11 +313,11 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-tr from-pink-50 via-white to-pink-25 text-gray-800 relative">
+    <div className={`min-h-screen bg-gradient-to-tr from-pink-50 via-white to-pink-25 text-gray-800 relative ${popup.show ? "blurred" : ""}`}>
       {/* Popup message box */}
       {popup.show && (
         <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
-          <div className="pointer-events-auto bg-pink-600 text-white rounded-xl px-6 py-4 shadow-lg max-w-sm text-center font-semibold text-lg animate-fadeInOut">
+          <div className="pointer-events-auto bg-pink-600 text-white rounded-3xl px-10 py-6 shadow-lg max-w-md text-center font-semibold text-xl animate-fadeInOut">
             {popup.message}
           </div>
         </div>
@@ -1110,7 +1106,6 @@ function CustomForm({ artwork, sizes, frames, calculatePrice, onAdd, fmt }) {
       customization: Number(customFee),
       price,
     });
-    // Reset form after adding
     setSizeId(sizes[0].id);
     setFrameId(frames[0].id);
     setNotes("");
@@ -1271,12 +1266,18 @@ const rootEl = document.getElementById("root") || document.body.appendChild(docu
 rootEl.id = "root";
 createRoot(rootEl).render(<App />);
 
-/* Add the following CSS to your global styles for the popup animation:
+/* Add the following CSS to your global styles or a style tag:
+
+.blurred {
+  filter: blur(6px);
+  transition: filter 0.3s ease;
+}
 
 @keyframes fadeInOut {
-  0%, 100% {opacity: 0; transform: translateY(-10px);}
+  0%, 100% {opacity: 0; transform: translateY(-15px);}
   10%, 90% {opacity: 1; transform: translateY(0);}
 }
+
 .animate-fadeInOut {
   animation: fadeInOut 3.5s ease forwards;
 }
