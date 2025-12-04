@@ -729,16 +729,6 @@ export default function App() {
               Continue shopping
             </button>
 
-            <button
-              onClick={() => {
-                if (cart.length === 0) return alert("Cart empty");
-                setCheckoutView(true);
-              }}
-              className="flex-1 rounded px-3 py-2 bg-pink-600 text-white"
-            >
-              Checkout
-            </button>
-
             <button onClick={clearCart} className="px-3 py-2 text-sm text-gray-500">
               Clear
             </button>
@@ -757,7 +747,6 @@ export default function App() {
         </div>
       </div>
 
-      {/* ART MODAL */}
       {selectedArt && (
         <ArtModal
           art={selectedArt}
@@ -773,7 +762,6 @@ export default function App() {
         />
       )}
 
-      {/* VIEW IMAGE ONLY MODAL */}
       {viewImageOnly && (
         <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4">
           <button
@@ -812,14 +800,12 @@ function Carousel({ items = [], itemRenderer, perPage = { base: 1, sm: 2, md: 3 
     const onResize = () => setVisible(getPerPage());
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const maxIndex = Math.max(0, Math.ceil(items.length / visible) - 1);
 
   useEffect(() => {
     if (index > maxIndex) setIndex(maxIndex);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible, items.length, maxIndex]);
 
   const prev = () => setIndex((i) => Math.max(0, i - 1));
