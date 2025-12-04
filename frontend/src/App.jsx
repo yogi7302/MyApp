@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
+import axios from "axios";
+import API_BASE_URL from "../config/api";
 
 export default function App() {
   const initialArtworks = [
@@ -239,15 +241,64 @@ export default function App() {
     });
   }, [artworks, onlyAvailable, filterTag, query]);
 
-  const handleCheckout = (details) => {
-    console.log("Checkout:", details);
-    clearCart();
-    setCheckoutView(false);
-    alert("Order placed (demo)");
+  // Backend integration for placing order
+  const handleCheckout = async (details) => {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/api/order`, {
+        name: details.name,
+        email: details.email,
+        phone: details.phone || "",
+        items: cart,
+        totalPrice: cart.reduce((sum, item) => sum + item.price, 0),
+      });
+      if (response.data.success) {
+        alert("Order placed successfully!");
+        clearCart();
+        setCheckoutView(false);
+      } else {
+        alert("Failed to place order. Try again.");
+      }
+    } catch (error) {
+      alert("Something went wrong. Try again!");
+      console.error(error);
+    }
+  };
+
+  const handleSendMessage = async (data) => {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/api/contact`, {
+        name: data.name,
+        email: data.email,
+        message: data.message,
+      });
+      if (response.data.success) {
+        alert("Message sent successfully!");
+      } else {
+        alert("Failed to send message!");
+      }
+    } catch (error) {
+      alert("Failed to send message!");
+      console.error(error);
+    }
+  };
+
+  const handleSubscribe = async (email) => {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/api/newsletter`, { email });
+      if (response.data.success) {
+        alert("Subscribed successfully!");
+      } else {
+        alert("Failed to subscribe!");
+      }
+    } catch (error) {
+      alert("Failed to subscribe!");
+      console.error(error);
+    }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-tr from-pink-50 via-white to-pink-25 text-gray-800">
+      {/* HEADER */}
       <header className="sticky top-0 bg-white/70 backdrop-blur z-30">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -308,7 +359,9 @@ export default function App() {
         </div>
       </header>
 
+      {/* MAIN CONTENT */}
       <main className="max-w-6xl mx-auto px-4 py-8">
+        {/* HERO */}
         <section className="mb-8 grid md:grid-cols-2 gap-6 items-center">
           <div>
             <h2 className="text-3xl md:text-4xl font-extrabold">
@@ -336,6 +389,7 @@ export default function App() {
           </div>
         </section>
 
+        {/* FILTERS */}
         <section className="mb-6 flex flex-col md:flex-row gap-3 items-center justify-between">
           <div className="flex gap-2 items-center">
             <label className="text-sm">Filter:</label>
@@ -376,6 +430,7 @@ export default function App() {
           </div>
         </section>
 
+        {/* GALLERY */}
         <section id="gallery" className="mb-12">
           <h3 className="text-2xl font-semibold mb-4">Gallery</h3>
 
@@ -387,11 +442,7 @@ export default function App() {
                 className="bg-white rounded-2xl shadow-xl overflow-hidden max-w-xs mx-auto border border-pink-50"
               >
                 <div className="relative">
-                  <img
-                    src={a.image}
-                    alt={a.title}
-                    className="w-full h-56 object-cover transition duration-300 hover:scale-105"
-                  />
+                  <img src={a.image} alt={a.title} className="w-full h-56 object-cover transition duration-300 hover:scale-105" />
                   {a.sold && (
                     <span className="absolute top-3 left-3 bg-gray-900 text-white px-3 py-1 rounded-full text-xs tracking-wide">
                       SOLD
@@ -435,6 +486,7 @@ export default function App() {
           />
         </section>
 
+        {/* SOLD ITEMS */}
         <section id="sold" className="mb-12">
           <h3 className="text-2xl font-semibold mb-4">Sold Artworks</h3>
 
@@ -456,6 +508,7 @@ export default function App() {
           />
         </section>
 
+        {/* CUSTOM COMMISSIONS */}
         <section id="custom" className="mb-12">
           <h3 className="text-2xl font-semibold mb-4">Custom & Commissioned Artworks</h3>
 
@@ -496,6 +549,7 @@ export default function App() {
           </div>
         </section>
 
+        {/* TESTIMONIALS */}
         <section className="mb-12">
           <h3 className="text-2xl font-semibold mb-4">Testimonials</h3>
 
@@ -524,6 +578,7 @@ export default function App() {
           />
         </section>
 
+        {/* CONTACT */}
         <section id="contact" className="mb-16 grid md:grid-cols-2 gap-6">
           <div className="bg-white p-6 rounded-lg shadow-sm">
             <h3 className="text-2xl font-semibold mb-2">Contact</h3>
@@ -531,9 +586,10 @@ export default function App() {
               Questions? Send a message below and I'll get back to you.
             </p>
 
-            <ContactForm onSend={(d) => alert("Message sent: " + JSON.stringify(d))} />
+            <ContactForm onSend={handleSendMessage} />
           </div>
 
+          {/* ABOUT ARTIST */}
           <div className="bg-white p-6 rounded-2xl shadow-lg">
             <div className="flex flex-col gap-4 items-center text-center">
               <h4 className="text-2xl md:text-3xl font-semibold leading-tight">About the Artist</h4>
@@ -618,6 +674,7 @@ export default function App() {
           </div>
         </section>
 
+        {/* NEWSLETTER */}
         <section id="about" className="mb-12">
           <div className="bg-white p-8 rounded-lg shadow-sm w-full mx-auto">
             <h3 className="text-2xl font-semibold mb-3 text-left">Newsletter</h3>
@@ -626,42 +683,17 @@ export default function App() {
               and updates about commissions.
             </p>
 
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                alert("Joined newsletter (demo)");
-                e.target.reset();
-              }}
-              className="mt-1 flex flex-col sm:flex-row gap-3 items-start"
-            >
-              <input
-                name="email"
-                type="email"
-                placeholder="you@email.com"
-                className="flex-1 rounded border p-3 text-sm"
-                required
-              />
-              <button className="px-5 py-3 rounded bg-pink-600 text-white text-sm">
-                Join
-              </button>
-            </form>
-
-            <div className="mt-6 text-sm text-gray-500 text-left">
-              <strong>Why join?</strong>
-              <ul className="list-disc list-inside mt-2">
-                <li>Early access to new prints</li>
-                <li>Subscriber-only discounts</li>
-                <li>Commission availability updates</li>
-              </ul>
-            </div>
+            <NewsletterForm onSubscribe={handleSubscribe} />
           </div>
         </section>
       </main>
 
+      {/* FOOTER */}
       <footer className="py-8 text-center text-sm text-gray-500">
         © {new Date().getFullYear()} Digital Artist — Built with care.
       </footer>
 
+      {/* CART / CHECKOUT DRAWER */}
       <div
         className={`fixed top-20 md:top-24 right-4 md:right-8 w-full md:w-96 transition-all ${
           checkoutView ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0 pointer-events-none"
@@ -736,7 +768,7 @@ export default function App() {
 
           {checkoutView && (
             <div id="checkout-form" className="mt-4 border-t pt-4">
-              <h4 className="font-semibold">Checkout (demo)</h4>
+              <h4 className="font-semibold">Checkout</h4>
 
               <CheckoutForm
                 onCheckout={handleCheckout}
@@ -747,6 +779,7 @@ export default function App() {
         </div>
       </div>
 
+      {/* ART MODAL */}
       {selectedArt && (
         <ArtModal
           art={selectedArt}
@@ -762,6 +795,7 @@ export default function App() {
         />
       )}
 
+      {/* VIEW IMAGE ONLY MODAL */}
       {viewImageOnly && (
         <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4">
           <button
@@ -779,6 +813,38 @@ export default function App() {
         </div>
       )}
     </div>
+  );
+}
+
+function NewsletterForm({ onSubscribe }) {
+  const [email, setEmail] = useState("");
+  const [subscribing, setSubscribing] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSubscribing(true);
+    await onSubscribe(email);
+    setSubscribing(false);
+    setEmail("");
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="mt-1 flex flex-col sm:flex-row gap-3 items-start">
+      <input
+        type="email"
+        placeholder="you@email.com"
+        className="flex-1 rounded border p-3 text-sm"
+        required
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+      <button
+        disabled={subscribing}
+        className="px-5 py-3 rounded bg-pink-600 text-white text-sm"
+      >
+        {subscribing ? "Subscribing..." : "Join"}
+      </button>
+    </form>
   );
 }
 
@@ -1099,20 +1165,17 @@ function ContactForm({ onSend }) {
 
   return (
     <form
-      onSubmit={(e) => {
+      onSubmit={async (e) => {
         e.preventDefault();
+        setSending(true);
         const data = {
           name: e.target.name.value,
           email: e.target.email.value,
           message: e.target.message.value,
         };
-
-        setSending(true);
-        setTimeout(() => {
-          setSending(false);
-          onSend(data);
-          e.target.reset();
-        }, 700);
+        await onSend(data);
+        setSending(false);
+        e.target.reset();
       }}
       className="mt-4 space-y-3"
     >
@@ -1146,20 +1209,16 @@ function CheckoutForm({ onCheckout, total }) {
         const details = {
           name: e.target.name.value,
           email: e.target.email.value,
-          address: e.target.address.value,
-          total,
+          phone: e.target.phone.value,
         };
 
-        setTimeout(() => {
-          setLoading(false);
-          onCheckout(details);
-        }, 900);
+        onCheckout(details).finally(() => setLoading(false));
       }}
       className="space-y-2"
     >
       <input name="name" placeholder="Full name" className="block w-full rounded border p-2" required />
       <input name="email" type="email" placeholder="Email" className="block w-full rounded border p-2" required />
-      <input name="address" placeholder="Shipping address" className="block w-full rounded border p-2" required />
+      <input name="phone" placeholder="Phone number" className="block w-full rounded border p-2" />
 
       <div className="flex items-center justify-between">
         <div className="text-sm">Pay securely</div>
