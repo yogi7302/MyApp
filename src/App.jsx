@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 
 export default function App() {
-  // ------------------ Artwork Data (expanded with 6 more items; several marked sold) ------------------
   const initialArtworks = [
     {
       id: "a1",
@@ -653,15 +652,23 @@ export default function App() {
       </footer>
 
       <div
-        className={`fixed right-4 bottom-4 md:bottom-8 md:right-8 w-full md:w-96 transition-all z-50 ${
-          checkoutView ? "translate-y-0" : "translate-y-10 opacity-0"
+        className={`fixed top-20 md:top-24 right-4 md:right-8 w-full md:w-96 transition-all ${
+          checkoutView ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0 pointer-events-none"
         }`}
-        style={{ zIndex: 60 }}
       >
-        <div className="bg-white rounded-lg shadow-lg p-4">
+        <div className="bg-white rounded-lg shadow-lg p-4 max-h-[calc(100vh-140px)] overflow-auto">
           <div className="flex items-center justify-between">
             <div className="font-semibold">Cart</div>
-            <div className="text-sm text-gray-500">{cart.length} items</div>
+            <div className="flex items-center gap-3">
+              <div className="text-sm text-gray-500">{cart.length} items</div>
+              <button
+                onClick={() => setCheckoutView(false)}
+                aria-label="Close cart"
+                className="text-gray-400 hover:text-gray-600 text-lg font-bold leading-none"
+              >
+                ×
+              </button>
+            </div>
           </div>
 
           <div className="mt-3 max-h-64 overflow-auto">
@@ -703,7 +710,7 @@ export default function App() {
             </div>
           </div>
 
-          <div className="mt-3 flex gap-2">
+          <div className="mt-3 flex gap-2 flex-wrap">
             <button
               onClick={() => setCheckoutView(false)}
               className="flex-1 border rounded px-3 py-2"
@@ -775,12 +782,14 @@ function Carousel({ items = [], itemRenderer, perPage = { base: 1, sm: 2, md: 3 
     const onResize = () => setVisible(getPerPage());
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const maxIndex = Math.max(0, Math.ceil(items.length / visible) - 1);
 
   useEffect(() => {
     if (index > maxIndex) setIndex(maxIndex);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible, items.length, maxIndex]);
 
   const prev = () => setIndex((i) => Math.max(0, i - 1));
