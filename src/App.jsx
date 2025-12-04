@@ -191,6 +191,7 @@ export default function App() {
   });
 
   const [selectedArt, setSelectedArt] = useState(null);
+  const [viewImageOnly, setViewImageOnly] = useState(null);
   const [checkoutView, setCheckoutView] = useState(false);
 
   const [testimonials] = useState([
@@ -378,50 +379,60 @@ export default function App() {
         <section id="gallery" className="mb-12">
           <h3 className="text-2xl font-semibold mb-4">Gallery</h3>
 
-          <Carousel items={filtered} itemRenderer={(a) => (
-            <article
-              key={a.id}
-              className="bg-white rounded-2xl shadow-xl overflow-hidden max-w-xs mx-auto border border-pink-50"
-            >
-              <div className="relative">
-                <img src={a.image} alt={a.title} className="w-full h-56 object-cover transition duration-300 hover:scale-105" />
-                {a.sold && (
-                  <span className="absolute top-3 left-3 bg-gray-900 text-white px-3 py-1 rounded-full text-xs tracking-wide">
-                    SOLD
-                  </span>
-                )}
-              </div>
-
-              <div className="p-5 space-y-3">
-                <div>
-                  <h4 className="font-semibold text-lg">{a.title}</h4>
-                  <p className="text-sm text-gray-500 mt-1 leading-tight">{a.description}</p>
+          <Carousel
+            items={filtered}
+            itemRenderer={(a) => (
+              <article
+                key={a.id}
+                className="bg-white rounded-2xl shadow-xl overflow-hidden max-w-xs mx-auto border border-pink-50"
+              >
+                <div className="relative">
+                  <img
+                    src={a.image}
+                    alt={a.title}
+                    className="w-full h-56 object-cover transition duration-300 hover:scale-105"
+                  />
+                  {a.sold && (
+                    <span className="absolute top-3 left-3 bg-gray-900 text-white px-3 py-1 rounded-full text-xs tracking-wide">
+                      SOLD
+                    </span>
+                  )}
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <div className="text-pink-600 font-semibold text-lg">{fmt(a.priceBase)}</div>
+                <div className="p-5 space-y-3">
+                  <div>
+                    <h4 className="font-semibold text-lg">{a.title}</h4>
+                    <p className="text-sm text-gray-500 mt-1 leading-tight">{a.description}</p>
+                  </div>
 
-                  <div className="flex gap-2">
-                    <button
-                      className="text-xs uppercase tracking-wide px-3 py-1 border border-pink-200 rounded-full hover:bg-pink-50 transition"
-                      onClick={() => setSelectedArt(a)}
-                    >
-                      View
-                    </button>
+                  <div className="flex items-center justify-between">
+                    <div className="text-pink-600 font-semibold text-lg">{fmt(a.priceBase)}</div>
 
-                    {!a.sold && (
+                    <div className="flex gap-2">
                       <button
-                        className="text-xs uppercase tracking-wide px-3 py-1 rounded-full bg-pink-600 text-white shadow hover:shadow-md transition"
-                        onClick={() => setSelectedArt(a)}
+                        className="text-xs uppercase tracking-wide px-3 py-1 border border-pink-200 rounded-full hover:bg-pink-50 transition"
+                        onClick={() => setViewImageOnly(a)}
+                        aria-label={`View image of ${a.title}`}
                       >
-                        Buy
+                        View
                       </button>
-                    )}
+
+                      {!a.sold && (
+                        <button
+                          className="text-xs uppercase tracking-wide px-3 py-1 rounded-full bg-pink-600 text-white shadow hover:shadow-md transition"
+                          onClick={() => setSelectedArt(a)}
+                          aria-label={`Buy ${a.title}`}
+                        >
+                          Buy
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </article>
-          )} perPage={{ base: 1, sm: 2, md: 3 }} />
+              </article>
+            )}
+            perPage={{ base: 1, sm: 2, md: 3 }}
+          />
         </section>
 
         <section id="sold" className="mb-12">
@@ -746,6 +757,7 @@ export default function App() {
         </div>
       </div>
 
+      {/* ART MODAL */}
       {selectedArt && (
         <ArtModal
           art={selectedArt}
@@ -759,6 +771,24 @@ export default function App() {
           }}
           fmt={fmt}
         />
+      )}
+
+      {/* VIEW IMAGE ONLY MODAL */}
+      {viewImageOnly && (
+        <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4">
+          <button
+            onClick={() => setViewImageOnly(null)}
+            className="absolute top-6 right-6 text-white text-3xl font-bold bg-black bg-opacity-50 rounded-full w-10 h-10 flex items-center justify-center hover:bg-opacity-75"
+            aria-label="Close image view"
+          >
+            ×
+          </button>
+          <img
+            src={viewImageOnly.image}
+            alt={viewImageOnly.title}
+            className="max-h-[90vh] max-w-full rounded-lg shadow-lg"
+          />
+        </div>
       )}
     </div>
   );
