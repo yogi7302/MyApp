@@ -241,7 +241,24 @@ export default function App() {
     });
   }, [artworks, onlyAvailable, filterTag, query]);
 
-  // Backend integration for placing order
+  // Popup state and function for modern, centered message box
+  const [popup, setPopup] = useState({ show: false, message: "" });
+
+  const showPopup = (message) => {
+    setPopup({ show: true, message });
+    setTimeout(() => setPopup({ show: false, message: "" }), 3500);
+  };
+
+  // Custom form reset key for clearing form after adding to cart and order placed
+  const [customFormResetKey, setCustomFormResetKey] = useState(Date.now());
+
+  // Add to cart wrapper for CustomForm to reset form after add
+  const handleCustomAddToCart = (item) => {
+    addToCart(item);
+    setCustomFormResetKey(Date.now());
+  };
+
+  // Checkout handler with popup and cart clear, also resets custom form on success
   const handleCheckout = async (details) => {
     try {
       const response = await axios.post(`${API_BASE_URL}/api/order`, {
@@ -252,18 +269,20 @@ export default function App() {
         totalPrice: cart.reduce((sum, item) => sum + item.price, 0),
       });
       if (response.data.success) {
-        alert("Order placed successfully!");
+        showPopup("Order placed successfully!");
         clearCart();
         setCheckoutView(false);
+        setCustomFormResetKey(Date.now()); // Reset custom form after order placed
       } else {
-        alert("Failed to place order. Try again.");
+        showPopup("Failed to place order. Try again.");
       }
     } catch (error) {
-      alert("Something went wrong. Try again!");
+      showPopup("Something went wrong. Try again!");
       console.error(error);
     }
   };
 
+  // Send message handler with popup
   const handleSendMessage = async (data) => {
     try {
       const response = await axios.post(`${API_BASE_URL}/api/contact`, {
@@ -272,32 +291,42 @@ export default function App() {
         message: data.message,
       });
       if (response.data.success) {
-        alert("Message sent successfully!");
+        showPopup("Message sent successfully!");
       } else {
-        alert("Failed to send message!");
+        showPopup("Failed to send message!");
       }
     } catch (error) {
-      alert("Failed to send message!");
+      showPopup("Failed to send message!");
       console.error(error);
     }
   };
 
+  // Subscribe handler with popup
   const handleSubscribe = async (email) => {
     try {
       const response = await axios.post(`${API_BASE_URL}/api/newsletter`, { email });
       if (response.data.success) {
-        alert("Subscribed successfully!");
+        showPopup("Subscribed successfully!");
       } else {
-        alert("Failed to subscribe!");
+        showPopup("Failed to subscribe!");
       }
     } catch (error) {
-      alert("Failed to subscribe!");
+      showPopup("Failed to subscribe!");
       console.error(error);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-tr from-pink-50 via-white to-pink-25 text-gray-800">
+    <div className="min-h-screen bg-gradient-to-tr from-pink-50 via-white to-pink-25 text-gray-800 relative">
+      {/* Popup message box */}
+      {popup.show && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
+          <div className="pointer-events-auto bg-pink-600 text-white rounded-xl px-6 py-4 shadow-lg max-w-sm text-center font-semibold text-lg animate-fadeInOut">
+            {popup.message}
+          </div>
+        </div>
+      )}
+
       {/* HEADER */}
       <header className="sticky top-0 bg-white/70 backdrop-blur z-30">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
@@ -442,7 +471,11 @@ export default function App() {
                 className="bg-white rounded-2xl shadow-xl overflow-hidden max-w-xs mx-auto border border-pink-50"
               >
                 <div className="relative">
-                  <img src={a.image} alt={a.title} className="w-full h-56 object-cover transition duration-300 hover:scale-105" />
+                  <img
+                    src={a.image}
+                    alt={a.title}
+                    className="w-full h-56 object-cover transition duration-300 hover:scale-105"
+                  />
                   {a.sold && (
                     <span className="absolute top-3 left-3 bg-gray-900 text-white px-3 py-1 rounded-full text-xs tracking-wide">
                       SOLD
@@ -520,11 +553,12 @@ export default function App() {
               </p>
 
               <CustomForm
+                key={customFormResetKey}
                 artwork={{ title: "Custom Portrait", priceBase: 120, image: artworks[3].image }}
                 sizes={sizes}
                 frames={frames}
                 calculatePrice={calculatePrice}
-                onAdd={(item) => addToCart(item)}
+                onAdd={handleCustomAddToCart}
                 fmt={fmt}
               />
             </div>
@@ -1062,28 +1096,29 @@ function CustomForm({ artwork, sizes, frames, calculatePrice, onAdd, fmt }) {
     customization: Number(customFee),
   });
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onAdd({
+      artId: "custom",
+      image: artwork.image,
+      title: artwork.title,
+      sizeId,
+      sizeLabel: sizes.find((s) => s.id === sizeId).label,
+      frameId,
+      frameLabel: frames.find((f) => f.id === frameId).label,
+      notes,
+      customization: Number(customFee),
+      price,
+    });
+    // Reset form after adding
+    setSizeId(sizes[0].id);
+    setFrameId(frames[0].id);
+    setNotes("");
+    setCustomFee(0);
+  };
+
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-
-        onAdd({
-          artId: "custom",
-          image: artwork.image,
-          title: artwork.title,
-          sizeId,
-          sizeLabel: sizes.find((s) => s.id === sizeId).label,
-          frameId,
-          frameLabel: frames.find((f) => f.id === frameId).label,
-          notes,
-          customization: Number(customFee),
-          price,
-        });
-
-        alert("Added custom commission to cart (demo)");
-      }}
-      className="mt-4 space-y-3"
-    >
+    <form onSubmit={handleSubmit} className="mt-4 space-y-3">
       <div>
         <label className="text-sm">Size</label>
         <select
@@ -1148,6 +1183,8 @@ function CustomForm({ artwork, sizes, frames, calculatePrice, onAdd, fmt }) {
         <button
           type="button"
           onClick={() => {
+            setSizeId(sizes[0].id);
+            setFrameId(frames[0].id);
             setNotes("");
             setCustomFee(0);
           }}
@@ -1163,22 +1200,21 @@ function CustomForm({ artwork, sizes, frames, calculatePrice, onAdd, fmt }) {
 function ContactForm({ onSend }) {
   const [sending, setSending] = useState(false);
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSending(true);
+    const data = {
+      name: e.target.name.value,
+      email: e.target.email.value,
+      message: e.target.message.value,
+    };
+    await onSend(data);
+    setSending(false);
+    e.target.reset();
+  };
+
   return (
-    <form
-      onSubmit={async (e) => {
-        e.preventDefault();
-        setSending(true);
-        const data = {
-          name: e.target.name.value,
-          email: e.target.email.value,
-          message: e.target.message.value,
-        };
-        await onSend(data);
-        setSending(false);
-        e.target.reset();
-      }}
-      className="mt-4 space-y-3"
-    >
+    <form onSubmit={handleSubmit} className="mt-4 space-y-3">
       <input name="name" placeholder="Your name" className="block w-full rounded border p-2" required />
       <input name="mobile" placeholder="Mobile number" className="block w-full rounded border p-2" required />
       <input name="email" type="email" placeholder="Email" className="block w-full rounded border p-2" required />
@@ -1200,22 +1236,20 @@ function ContactForm({ onSend }) {
 function CheckoutForm({ onCheckout, total }) {
   const [loading, setLoading] = useState(false);
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    const details = {
+      name: e.target.name.value,
+      email: e.target.email.value,
+      phone: e.target.phone.value,
+    };
+    await onCheckout(details);
+    setLoading(false);
+  };
+
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        setLoading(true);
-
-        const details = {
-          name: e.target.name.value,
-          email: e.target.email.value,
-          phone: e.target.phone.value,
-        };
-
-        onCheckout(details).finally(() => setLoading(false));
-      }}
-      className="space-y-2"
-    >
+    <form onSubmit={handleSubmit} className="space-y-2">
       <input name="name" placeholder="Full name" className="block w-full rounded border p-2" required />
       <input name="email" type="email" placeholder="Email" className="block w-full rounded border p-2" required />
       <input name="phone" placeholder="Phone number" className="block w-full rounded border p-2" />
@@ -1236,3 +1270,15 @@ import { createRoot } from "react-dom/client";
 const rootEl = document.getElementById("root") || document.body.appendChild(document.createElement("div"));
 rootEl.id = "root";
 createRoot(rootEl).render(<App />);
+
+/* Add the following CSS to your global styles for the popup animation:
+
+@keyframes fadeInOut {
+  0%, 100% {opacity: 0; transform: translateY(-10px);}
+  10%, 90% {opacity: 1; transform: translateY(0);}
+}
+.animate-fadeInOut {
+  animation: fadeInOut 3.5s ease forwards;
+}
+
+*/
